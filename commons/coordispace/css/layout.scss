@@ -1,0 +1,50 @@
+// 수정180914
+$color-brand:#FF644E;
+$color-body:#222222 !important;
+$color-secondary:#bac0ca !important;
+$color-black-secondary:#829c9d;
+
+#header{
+	background-color:$color-body ;
+	color: #fff;
+	.material-icons{
+		color: #fff;
+	}
+	.logo_dev{
+		.brand{
+			height: 30px;
+			width: 130px;
+			background:url('../images/logo.png');
+		}
+	}
+}
+.snb_list>ul>li>ul>li.on>a {color:#fff; background:$color-brand url(../images/snb_2depth.png) no-repeat 10px -31px;}
+.login_wrap{
+	background-color:#fff;
+	padding:1.5rem;
+	border-radius: .25rem;
+	.login_logo, .card-body{
+		padding:1.5rem;		
+	}
+	.btn_brand{
+		background-color:$color-secondary;
+		border-color:$color-secondary;
+	}
+	.logo{
+		img{
+			width: 100px;
+		}
+	}		
+}
+.login_wrap{
+	.login_logo{
+		.logo{
+			background-image:url('../images/logo.png'); 
+			width: 74px; 
+			height: 30px;
+			background-repeat:no-repeat;
+			background-size: 74px 30px;
+		}
+	}	
+
+}

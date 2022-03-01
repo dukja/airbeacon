@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>페이지리스트</title>
+<style type="text/css">
+	* { margin:0; padding:0; font-family:"돋움",Dotum, Verdana, Arial, sans-serif;}
+	body{ margin:10px; font-size:0.75em;}
+	h1{ padding:20px 0; font-size:2.5em; border-bottom:2px #ddd solid; letter-spacing:-0.15em;}
+	h1 span { color:#ff9d28; letter-spacing:-0.1em;}
+	h2 { color:#454545; clear:both; font-size:18px; margin:25px 0 5px 0;}
+	
+	ul{ list-style-type:none; background:#eee; height:12px; margin:20px 0 0 0; padding:10px;}
+		li{ float:left; margin-right:15px; font-weight:bold; border-right:1px #ddd solid; padding-right:15px;}
+		li a { color:#000; text-decoration:none;}
+		li a:hover { color:#ff9d28; text-decoration:underline;}
+		li a.ov { color: #999999; text-decoration:underline;}
+	
+	table{ clear:both; border:1px #ddd solid; width:100%;border-spacing:0; border-collapse:collapse;}
+	th{ border:1px #ddd solid; background:#eee; padding:5px;}
+	td{ border:1px #ddd solid; padding:5px 0 3px 5px; color:#666;}
+	tr:hover { background:#FFFF99;}
+	.con { text-align:center; padding:5px 0 3px 0;}
+</style>
+</head>
+<body>
+<h1><span>AIR BEACON</span> 페이지 리스트</h1>
+
+<!--
+<ul>
+	<li><a href="main.html">Index(완료)</a></li>
+	<li><a href="star.html">Star(완료)</a></li>
+	<li><a href="cafe.html">Cafe(완료)</a></li>
+	<li><a href="fortune.html">Fortune (완료)</a></li>
+	<li><a href="news.html">News(완료)</a></li>
+	<li><a href="security.html">Security(완료)</a></li>
+	<li><a href="member.html">Member(완료)</a></li>
+	<li><a href="help.html">Help(완료)</a></li>
+<li><a href="search.html">Search(완료)</a></li>
+	<li><a href="util.html">Util(완료)</a></li>
+	<li><a href="mail.html">Mail</a></li>
+</ul>
+-->
+
+<h2 id="01">공통 레이아웃 및 단일페이지</h2>
+<table cellpadding="0" cellspacing="0">
+<colgroup>
+	<col width="16%" />
+	<col width="16%" />
+	<col width="16%" />
+	<col width="16%" />
+	<col width="16%" />
+	<col width="" />
+</colgroup>
+  <tr>
+	<th scope="col">1Depth</th>
+	<th scope="col">2Depth</th>
+	<th scope="col">3Depth</th>
+	<th scope="col">4Depth</th>
+	<th scope="col">디렉토리</th>
+	<th scope="col">파일명</th>
+  </tr>
+  <tr>
+	<td>대쉬보드 (공통레이아웃)</td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td>/cafe/</td>
+	<td><a href="/tway/dashBoardList.html" target="_blank">dashBoardList.html</a></td>
+  </tr>
+  <tr>
+	<td>목록보기 (공통레이아웃)</td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td>/cafe/</td>
+	<td><a href="/tway/eventList.html" target="_blank">eventList.html</a></td>
+  </tr>
+  <tr>
+	<td>등록하기 (공통레이아웃)</td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td>/cafe/</td>
+	<td><a href="/tway/addEventForm.html" target="_blank">addEventForm.html</a></td>
+  </tr>
+
+  <tr>
+	<td>로그인 (단일페이지)</td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td>/cafe/</td>
+	<td><a href="/tway/login.html" target="_blank">login.html</a></td>
+  </tr>
+  <tr>
+	<td>로그온에러(단일페이지)</td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td>/cafe/</td>
+	<td><a href="/tway/logonError.html" target="_blank">logonError.html</a></td>
+  </tr>
+  <tr>
+	<td>비밀번호 변경(단일페이지)</td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td>/cafe/</td>
+	<td><a href="/tway/pwReissue.html" target="_blank">pwReissue.html</a></td>
+  </tr>
+   <tr>
+	<td>에러(단일페이지) </td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td>/cafe/</td>
+	<td><a href="/tway/error.html" target="_blank">error.html</a></td>
+  </tr>
+
+</table>
+<h3>breadcrumb</h3>
+<pre>
+	<code class="language-html" data-lang="html">
+		<ol class="breadcrumb small text-secondary">
+			<li class="breadcrumb-item badge badge-pill badge-secondary">Home</li>
+			<li class="breadcrumb-item" aria-current="page">이벤트관리</li>
+			<li class="breadcrumb-item" aria-current="page">이벤트등록</li>
+			<li class="breadcrumb-item active" aria-current="page">목록</li>
+		</ol>	
+	</code>	
+</pre>
+
+
+</body>
+</html>

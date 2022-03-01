@@ -1,0 +1,95 @@
+.snb {
+  position: fixed !important;
+  height: 100% !important;
+  background-color: #2f4050;
+  border-right: 3px solid #24d4d2 !important;
+  top: 64px;
+  bottom: 0px;
+  border-bottom: 0px !important;
+  overflow: auto; }
+
+body.login {
+  background: linear-gradient(to bottom, black, black) !important; }
+
+body .login #wrap {
+  background: url("/airbeacon/commons/hpoint/images/bg-login.png") no-repeat 20% 50%;
+  margin: 0px auto; }
+
+.card {
+  min-width: 0px !important; }
+
+.login_wrap {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #fff;
+  border-radius: 0px !important; }
+
+.login_wrap .login_logo .title {
+  color: #ffffff; }
+
+.logo_dev .brand {
+  background: url("/airbeacon/commons/hpoint/images/logo.png") !important;
+  width: 140px !important;
+  height: 40px !important; }
+
+.login_logo .logo {
+  background-image: url("/airbeacon/commons/hpoint/images/logo_black.png") !important;
+  width: 121px !important;
+  height: 40px !important;
+  background-repeat: no-repeat; }
+
+.btn_brand {
+  background: #24d4d2 !important;
+  border-color: #24d4d2 !important;
+  color: #222222 !important; }
+  .btn_brand:hover {
+    background-color: #258772 !important;
+    border-color: #258772 !important; }
+  .btn_brand:not(:disabled):not(.disabled):active {
+    color: #222222 !important;
+    background-color: #258772 !important;
+    border-color: #258772 !important; }
+
+.breadcrumb .active {
+  color: #24d4d2 !important !important; }
+
+.snb_util ul .on a {
+  background: #bac0ca !important;
+  color: #222222 !important; }
+
+.snb .snb_list ul li ul {
+  border-bottom: 1px solid #445362 !important; }
+
+.snb .snb_list ul li a {
+  color: #bac0ca !important;
+  border-bottom: 1px solid #445362 !important; }
+
+.snb .snb_list a.btn_allmenu span {
+  color: #bac0ca !important; }
+
+.snb_list > ul > li > ul > li.on > a {
+  color: #fff !important;
+  background-color: #1d2e3e !important;
+  background-image: none !important; }
+
+.snb_util ul {
+  border-bottom: 1px solid #445362; }
+
+.snb_util ul li a {
+  background-color: #1d2e3e;
+  color: #bac0ca !important; }
+
+.nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
+  border-color: #1d2e3e #1d2e3e #1d2e3e; }
+
+#header {
+  background-image: linear-gradient(to bottom, #2d3e4e, #172631) !important;
+  background-repeat: no-repeat !important; }
+  #header .material-icons {
+    color: #bfc4c9 !important; }
+
+.snb_list > ul > li > a.open {
+  background: #24d4d2 !important;
+  color: #222222 !important; }
+
+.snb_list#snb_favorite > ul > li.on > a {
+  color: #fff !important; }

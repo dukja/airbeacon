@@ -1,0 +1,352 @@
+.acknowledgement{
+  background-color: #E0E0E0;
+    margin: 0 10px 0.4em;
+    padding: 12px 8px;
+    text-align: center;
+}
+
+.acknowledgement h1{
+    padding-bottom: 10px;
+}
+
+.acknowledgement a,.acknowledgement a:hover{
+ background-color: #525252;
+    color: #FFFFFF;
+    font-size: 1em;
+    margin: 10px;
+    padding: 8px;
+}
+
+.acknowledgement p{
+font-size: 1.0em;
+}
+
+.dataform {
+
+ background-color: #E0E0E0;
+    margin: 0 10px 0.4em;
+    padding: 12px 8px;
+}
+
+.dataform h1{
+
+    font-size: 1.4em;
+    padding-bottom: 10px;
+}
+
+
+
+.dataControls{
+ margin: 20px 14px !important;
+}
+
+/*-----------------------------------------------------------
+	Admin Fields
+-----------------------------------------------------------*/
+.contactsFormAdminFields{
+	border-bottom:1px dashed #D6D6D6;
+	margin:10px 0 20px 0 !important;
+	padding:0 0 10px;
+	width:100%;
+}
+.contactsFormAdminFields .contactsField {
+	width: 100%;
+	overflow: hidden;
+	margin:0 0 5px;
+}
+.contactsFormAdminFields .contactsFieldLabel {
+	display:block;
+	float:left;
+	width:70px;
+}
+.contactsFormAdminFields .controls {
+	float:left;
+	margin:0 5px 0 0;
+}
+
+.contactsFormAdminFields input {
+	width: 541px !important;
+background-color: #F4F4F4;
+    border: 1px solid #BEBEBE;
+    color: #6B6B6B;
+    font-size: 12px;
+    padding: 3px !important;
+ 
+}
+
+/*-----------------------------------------------------------
+	Form
+-----------------------------------------------------------*/
+#content .formContents {
+	overflow:hidden;
+	width:100%;
+	margin:0 0 0 0 !important;
+}
+
+.tabadmin {
+	background-color:#E8E8E8;
+	border:1px solid #AAAAAA;
+	color:#404040;
+	font-weight:bold;
+	margin:0 0 10px;
+	padding:5px;
+	text-align:left;
+}
+
+.contactsTab {
+	width: 100%;
+	overflow: hidden;
+	margin:0 0 14px;
+	/*border-bottom:1px dashed #cccccc;*/
+}
+
+
+
+
+.contattiFieldCheckList input[type="text"], .contattiFieldText input, .contattiFieldEmail input {
+	background-color:#FFFFFF;
+	border:none;
+	font-size:1.0em;
+	color:#111111;
+	width:99%;
+	padding: 2px 0 4px 4px;
+}
+
+
+.contattiFieldText select {
+background-color: #FFFFFF !important;
+    border: medium none;
+    font-size: 1em;
+    padding: 2px 0 4px;
+    width: 100%;
+}
+.contattiFieldSelectBox select {
+background-color: #FFFFFF !important;
+    border: medium none;
+    font-size: 1em;
+    padding: 2px 0 4px;
+    width: 100%;
+}
+
+.contattiFieldCheckList input[type="checkbox"]{
+        margin-right:6px;
+        float: left;
+}
+
+.contattiFieldTextarea .yui-resize {
+	background-color:#FFFFFF;
+	font-size:12px;
+	padding: 3px;
+	color:#6B6B6B;
+width:100% !important;
+}
+.contattiFieldTextarea .yui-resize textarea {
+	border: 0 none;
+background-color: #FFFFFF;
+    border: 0 none;
+    resize: none;
+width:99% !important;
+font-size: 1.2em !important;
+}
+.contattiFieldTextarea textarea[name="info_privacy"] {
+	background-color:#ffffff;
+	border:1px solid #ffffff;
+	color:#6A6A6A;
+	padding:0;
+	font-size:12px;
+}
+
+.contattiFieldValue label{ 
+	font-size:13px;
+
+}
+
+.contattiFieldLabel label{ 
+	font-size:1.0em;
+color:#535353;
+}
+
+.contattiFieldLabel .subtext{ 
+    border: 1px dotted #BABABA;
+    color: #414141;
+    font-size: 13px;
+    margin: 6px 75px 0 0;
+    padding: 10px;
+background-color: #F4F4F4;
+}
+
+
+.contactsFormAdminFields .contactsFieldLabel {
+	font-size:14px;
+}
+
+.contattiFieldValue {
+}
+
+
+#contactsTab_right .contattiFieldLabel, #contactsTab_right .contattiFieldValue  {
+	float: left;
+}
+
+.contattiFieldContainer {
+	margin-bottom: 6px;
+	overflow:hidden;
+	width:324px;
+	float: left;
+	margin:0 30px 10px 0;
+}
+.widetab .contattiFieldContainer {
+	margin-bottom: 6px;
+	overflow:hidden;
+	width:100%;
+	margin:0 0 6px 0;
+}
+.contattiFieldContainer.last {
+	margin-right: 0;
+}
+.contattiFieldContainer.first {
+	clear:both;
+}
+
+.controls {
+	
+}
+
+/*-------------------------------------------------------------------------
+
+	Wide pagelayout css wrapper
+
+-------------------------------------------------------------------------*/
+.contattiFieldCheckList label{
+padding: 3px 6px 0 0;
+float: left;
+}
+.wide .contattiFieldContainer {
+	width:475px;
+}
+.wide .widetab .contattiFieldContainer {
+	width:980px
+}
+.wide .contattiFieldCheckList input[type="text"] {
+	width:465px;
+}
+.wide .contattiFieldText input {
+	width:465px;
+}
+.wide .contattiFieldEmail input {
+	width:465px;
+}
+.wide .contattiFieldText select {
+	width:465px;
+}
+.wide .contattiFieldSelectBox select {
+	width:465px;
+}
+
+.contattiFieldValue.contattiFieldTextarea{
+margin-top:2px;
+}
+
+
+
+/*-------------------------------------------------------------------------
+
+	Messaggi Validazione Errori
+
+-------------------------------------------------------------------------*/
+label.error {
+	padding: 3px 4px 0 0;
+	color : red;
+	font-weight: normal;
+	float: left;
+        font-size:13px;
+}
+
+
+/* End Messaggi Validazione Errori */
+
+/* Captcha */
+.captchaBox {
+	display:block;
+	margin-left:15px;
+	text-align:right;
+	text-transform:uppercase;
+}
+
+#captcha_formId {
+	height:38px;
+	padding:0 4px;
+}
+.wg-captchaImage{
+	vertical-align: top;
+	margin-left: 10px;
+	height:40px;
+}
+/* END Captcha */
+
+.button {
+	background-color:transparent;
+	border:1px solid #BEBEBE;
+	color:#414141;
+	cursor:pointer;
+	display:block;
+	font-size:13px;
+	font-weight:bold;
+	margin-left:auto;
+	margin-right:0;
+	margin-top:8px;
+	width:104px;
+}
+
+.row1{ 
+	background-color:#EEEEEE;
+}
+
+#DataFormList{
+	font-size: 12px;
+}
+
+.send-bt{
+       text-align: center;
+}
+
+.send-bt input[type=submit]{
+background-color: #525252;
+    border: medium none;
+    color: #FFFFFF;
+    font-size: 1em;
+    overflow: hidden;
+    padding: 8px;
+
+}
+
+
+/*
+	
+	Delete info
+
+*/
+.delete-info {
+	color: #0E72B5;
+	font-size: 12px;
+	margin: 30px 0;
+}
+.delete-info a {
+	font-weight: bold;
+}
+/*
+.styledButton.send{
+	background: url("Invalid Asset URL") no-repeat scroll right top transparent;
+	height: 30px;
+}
+
+.styledButton.send a{
+	background:url("Invalid Asset URL") no-repeat scroll left top transparent;
+	color:#FFFFFF;
+	font-weight:bold;
+	height: 20px;
+        line-height: 18px;
+        padding:4px 37px 4px 18px;
+	font-size:12px;
+}
+*/

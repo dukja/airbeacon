@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>SW 비콘 서비스</title>	
+<!-- tway -->	
+<link rel="icon" type="image/png" href="commons/tway/images/icon.png"/>
+<link href="commons/coordispace/css/common.css" rel="stylesheet" type="text/css"  />
+<!-- <link href="commons/tway/css/tway.css" rel="stylesheet" type="text/css" /> -->
+<!-- <link href="commons/hpoint/css/hpoint.css" rel="stylesheet" type="text/css" /> -->
+<link href="commons/coordispace/css/layout.css" rel="stylesheet" type="text/css" class="style" />
+<!-- /tway -->
+<link rel="stylesheet" type="text/css" href="commons/scripts/jqueryUi/css/ui-lightness/jquery-ui-1.8.21.custom.css" />
+<script type="text/javascript" src="commons/scripts/jquery-latest.min.js"></script>
+<script src="commons/scripts/layer.js" type="text/javascript" ></script>
+<script  src="commons/scripts/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>	
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"> -->
+<script type="text/javascript" src="commons/scripts/chart.min.js"></script>
+<style type="text/css" title="">
+		.highcharts-axis, .highcharts-button, .highcharts-title, .highcharts-subtitle, .highcharts-legend {display:none;}
+		#container_highchartss {position:Relative; left:-25px;}
+</style>
+
+<script type="text/javascript">		
+
+	function goNoticeBoard(idx){
+		if(idx == "" || ! idx){
+			return false;
+		}
+		
+		document.noticeBoardfrm.idx.value= idx;
+		document.noticeBoardfrm.submit();
+	}
+	
+	function goBoard(idx){
+		if(idx == "" || ! idx){
+			return false;
+		}
+		
+		document.boardfrm.idx.value= idx;
+		document.boardfrm.submit();
+	}			
+</script>
+</head>
+<body>
+<!-- wrap -->
+<div id="wrap" class="position-relative">	
+	<div id="btnStyleWrap" class="position-fixed w-100 text-center bg-dark" style="bottom:0px;z-index: 99; padding:50px;">
+		<div class="wrap text-white">
+			같은 코드로 여러가지 디자인 <a class="btn btn-light btn-lg mx-2 shadow" href="#" role="button">기본 디자인</a><a class="btn btn-light btn-lg mx-2 shadow" href="#" role="button">tWay 디자인</a><a class="btn btn-light btn-lg mx-2 shadow" href="#" role="button">Hyundai 디자인</a>
+		</div>
+	</div>
+	<!-- header -->
+	<div id="header">
+		<div class="mdc-toolbar__section d-flex flex-row">		
+			<span class="icon-large btn_snb_open btn btn-lg" href="#link" style="padding: 1rem ; text-align: center ; display : none">
+				<i class="material-icons" title="전체메뉴">menu</i>
+			</span>
+			<span class="icon-large btn_snb_close btn btn-lg" href="#link" style="padding: 1rem ; text-align: center;">
+				<i class="material-icons" title="전체메뉴">menu</i>
+			</span>
+			<!-- tway -->	
+			<h1 class="logo_dev "><a href="/airbeacon/" class="btn btn-lg d-flex align-items-center"><span class="brand" alt="SW비콘 서비스"/></span><span class="mx-2">|</span><span class="font-weight-bold pr-2">airBeacon</span><span>Hpoint Location Based Service</span></a>
+			</h1>
+			<!--/ tway -->	
+		</div>
+        <ul class="header_util">
+            <li class="user" >
+                <a class="btn btn-lg"><i class="material-icons" >person</i> admin 님</a>
+            </li>            
+            <li class="btn_user_modify"><a href="/airbeacon/sbUsers/userForm.do" class="btn btn-lg"><i class="material-icons" title="사용자설정">settings</i></a></li>
+            <li class="btn_logout" ><a  href="#" onclick="out();" class="btn btn-lg"><i class="material-icons" title="로그아웃">exit_to_app</i></a></li>
+        </ul>
+	</div>
+
+<!-- //header -->
+<script type="text/javascript">
+function out(){
+	$.ajax({
+		type: "POST",
+		url: "/airbeacon/sbUsers/logout",
+		dataType: "json",
+		async: false,
+		data: {
+		},
+		success: function(data){
+		},
+		beforeSend: function(){
+		},
+		error: function(jqXHR, textStatus, errorThrown){
+			// alert(jqXHR.responseText); //에러 페이지 내용
+			alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+			throw errorThrown;
+		},
+		complete: function(){
+			location.href="/airbeacon/logout";
+		}
+	});
+	
+}
+</script>
+<!-- //header -->
+
+<!-- container -->
+<div id="container">
+<script type="text/javascript">
+var _is_gobal_menu_open = false; 
+
+$(document).ready(function(){
+	
+	$.ajax({
+		type : "POST",
+		url : "sbMenu/leftMenu",
+		dataType : "json",
+		async : false,
+		data : {
+			callURL : "/airbeacon/sbDashBoard/dashBoardlist.do",
+			refer : "http://localhost:8080/airbeacon/"
+		},
+		success : function(data) {
+			if(data !== null){	
+				$("#snb_menu > ul").append(data.append);
+				//console.log(data.append);
+			}
+			
+		},
+		beforeSend : function() {
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			//alert(jqXHR.responseText); //에러 페이지 내용
+			alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+			throw errorThrown;
+		},
+		complete : function() {
+		}
+	});
+	
+	resetclickE();
+	
+	// 레벨 1단계 메뉴 뽑기
+	$( "#snb_menu>ul>li>a" ).each(function( index ) {
+	  //console.log( index + ": " + $( this ).text() + " : class-" + $( this ).hasClass('open') );
+	  if($( this ).hasClass('open')){
+		  $("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 닫기");
+		  return false;
+	  }
+	});
+	
+});
+
+
+//클릭이벤트의 재등록
+
+function resetclickE(){
+	
+	$("#snb_menu>ul>li>a").unbind('click'); //페이지 변경없이 다시불러온다면 필요 이벤트를 한번 지웠다 주게됨
+	
+	$("#snb_menu>ul>li>a").on('click',function(){
+		$(this).next("ul").slideToggle("fast");
+		$(this).toggleClass("open");
+		$("#snb_menu .btn_allmenu").removeClass("open");
+		$("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 열기");
+		
+		// 레벨 1단계 메뉴 뽑기
+		$( "#snb_menu>ul>li>a" ).each(function( index ) {
+		  //console.log( index + ": " + $( this ).text() + " : class-" + $( this ).hasClass('open') );
+		  if($( this ).hasClass('open')){
+			  $("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 닫기");
+			  return false;
+		  }
+		});
+		
+		return false;
+	});
+	
+	$(".snb_list li a .favorite").unbind('click'); //페이지 변경없이 다시불러온다면 필요 이벤트를 한번 지웠다 주게됨
+	
+	$(".snb_list li a .favorite").click(function(){
+		//alert($(this).next().val());  하위메뉴의 idx값 
+		//메뉴의 idx 값을 알기위해 형제로 input hidden을 만들었음.
+		$(this).toggleClass("on");
+		favariteinout($(this));
+		
+		return false;
+	});
+	$(".on").parent().css("display","block");
+	$(".on").parent().prev().toggleClass("open");
+	
+	var openclose = $('.snb_list a').hasClass('open');
+	if(openclose){
+		$("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 열기");
+	}
+	else {
+		$("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 닫기");
+	}
+	
+	$("#snb_menu li").click(function(){		
+		var openclose2 = $('.snb_list a').hasClass('open');
+		if(openclose2){$("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 열기");}
+		else {$("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 닫기");}
+		
+		// 레벨 1단계 메뉴 뽑기
+		$( "#snb_menu>ul>li>a" ).each(function( index ) {
+		  //console.log( index + ": " + $( this ).text() + " : class-" + $( this ).hasClass('open') );
+		  if($( this ).hasClass('open')){
+			  $("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 닫기");
+			  return false;
+		  }
+		});
+	});
+	
+	
+	
+	
+}
+
+function favariteinout(getobj){
+	
+	var checkname;
+	
+	//즐겨찾기 텝에 있는 거는 즐찾 버튼을 누르면 li가 사라진다.
+	if(getobj.hasClass("faon") == true){//faon은 알아보기위해 임의로 준 클래스
+		checkname=getobj.prev().text();//실제 메뉴에서 클래스 favorite on 인 것에서 즐찾 삭제된것의 이름
+		getobj.closest('li').remove();
+	}
+	
+	if(getobj.hasClass("on") == true){
+		alert("즐겨찾기에 등록합니다.");
+		//S- 즐겨찾기 등록 Ajax
+		
+		var didx = $(getobj).next().val();
+		
+		$.ajax({
+		type : "POST",
+		url : "sbMenu/insertfav",
+		dataType : "json",
+		async : false,
+		
+		data : {
+			idx : didx
+		},
+		success : function(data) {
+		},
+		beforeSend : function() {
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			//alert(jqXHR.responseText); //에러 페이지 내용
+			alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+			throw errorThrown;
+		},
+		complete : function() {
+		}
+	});
+		
+		
+		
+		//E- 즐겨찾기 등록 Ajax
+		
+	}else{
+		alert("즐겨찾기에서 삭제합니다.");
+		
+		//S-삭제된 즐겨찾기를 메뉴쪽에서도 on을 토글
+		if (checkname != null){
+			
+		for(var p=0; p<$(".favorite.on").size(); p++){
+		if($(".favorite.on").eq(p).prev().text()==checkname){
+					$(".favorite.on").eq(p).toggleClass("on");
+				}
+			}
+		}
+		//E-삭제된 즐겨찾기를 메뉴쪽에서도 on을 토글
+		
+		var didx = $(getobj).next().val();
+		
+		
+		//S- 즐겨찾기 삭제 Ajax
+		
+		$.ajax({
+		type : "POST",
+		url : "sbMenu/deletefav",
+		dataType : "json",
+		async : false,
+		data : {
+			idx : didx
+		},
+		success : function(data) {
+			
+		},
+		beforeSend : function() {
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			//alert(jqXHR.responseText); //에러 페이지 내용
+			alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+			throw errorThrown;
+		},
+		complete : function() {
+		}
+	});
+		
+		
+		//E- 즐겨찾기 삭제 Ajax
+		
+		
+		
+	}
+	
+}
+</script>
+
+<!-- snb -->
+		<nav class="snb">
+			<nav class="navbar navbar-expand-lg snb_tab mt-4">
+				<div class="collapse navbar-collapse snb_util">
+					<ul class="nav nav-tabs w-100">
+						<li class="nav-item on">
+						<a class="nav-link " href="#snb_menu">전체 메뉴</a>
+						</li>
+						<li class="nav-item">
+						<a class="nav-link" href="#snb_favorite"> 즐겨찾기</a>
+						</li>
+					</ul>
+				</div>
+			</nav>				
+			<div class="snb_list" id="snb_menu">
+				<a class="btn_allmenu w-100 text-right d-block" href="#link"><span class="btn btn-link btn-sm md-small">하위 메뉴 열기</span></a>
+				<ul><!--Ajax로 메뉴들 들어가는 부분  -->
+				</ul>
+			</div>
+
+			<!-- S: 즐겨찾기 -->
+			<div class="snb_list" id="snb_favorite" style="display:none">
+				<ul>
+					<!-- <li class="on"><a href="#link"><span>이벤트 등록</span><span class="favorite on"></span></a></li>
+					<li><a href="#link"><span>이벤트 승인</span><span class="favorite"></span></a></li>
+					<li><a href="#link"><span>쿠폰관리</span><span class="favorite"></span></a></li> -->
+				</ul>
+			</div>
+			<!-- E: 즐겨찾기 -->
+			
+		</nav>
+
+
+<script type="text/javascript">
+// 좌측 트리메뉴 높이 설정
+$(window).on('resize', function(e) {
+	var vheight = parseInt($(this).height());
+	//$('.snb_list').css('height', vheight -131);
+}).resize();
+$(window).trigger('resize');
+
+// 좌측 영역 열고 닫기
+$('.btn_snb_close').click(function () {
+	$(this).hide();
+	$('.btn_snb_open').show();
+	$('.snb').css('margin-left', '-240px');
+	$('#content').css('margin-left', '40px');
+	return false;
+});
+$('.btn_snb_open').click(function () {
+	$(this).hide();
+	$('.btn_snb_close').show();
+	$('.snb').css('margin-left', '0');
+	$('#content').css('margin-left', '280px');
+	return false;
+});
+
+// 좌측메뉴 즐겨찾기 탭 선택 시	
+$('.snb_util li').click(function(e){
+	var activeTab = $(this).find("a").attr("href");
+	$(this).siblings('li').removeClass('on');
+	$(this).addClass('on');
+	$(activeTab).show();
+	$(activeTab).siblings('.snb_list').hide();
+	openfav();
+	resetclickE();
+	return false;
+});
+
+function openfav(){
+	$.ajax({
+		type : "POST",
+		url : "sbMenu/favoriteMenu",
+		dataType : "json",
+		async : false,
+		data : {
+			callURL : "/airbeacon/sbDashBoard/dashBoardlist.do"
+		},
+		success : function(data) {
+			$("#snb_favorite > ul").html("");
+			$("#snb_favorite > ul").html(data.favHtml);
+		},
+		beforeSend : function() {
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			//alert(jqXHR.responseText); //에러 페이지 내용
+			alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+			throw errorThrown;
+		},
+		complete : function() {
+			
+		}
+	});
+}
+
+// 좌측 전체메뉴 펼치고 닫기
+$("#snb_menu .btn_allmenu").click(function(){
+	if ($(this).next("ul").find("ul").is(":visible")){
+		$(this).next("ul").find("ul").slideUp("fast");
+		$(this).next("ul").children("li").children("a").removeClass("open");
+		$(this).removeClass("open");
+		 $(this).children("span").text("메뉴 전체 열기");
+	} else {
+		$(this).next("ul").find("ul").slideDown("fast");
+		$(this).next("ul").children("li").children("a").addClass("open");
+		$(this).addClass("open");
+		$(this).children("span").text("메뉴 전체 닫기");
+	}
+	return false;
+});
+
+// 좌측메뉴 하위뎁스 펼치고 닫기
+$("#snb_menu>ul>li>a").click(function(){
+	$(this).next("ul").slideToggle("fast");
+	$(this).toggleClass("open");
+	$("#snb_menu .btn_allmenu").removeClass("open");
+	$("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 열기");
+	
+	// 레벨 1단계 메뉴 뽑기
+	$( "#snb_menu>ul>li>a" ).each(function( index ) {
+	  //console.log( index + ": " + $( this ).text() + " : class-" + $( this ).hasClass('open') );
+	  if($( this ).hasClass('open')){
+		  $("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 닫기");
+		  return false;
+	  }
+	});
+	return false;
+});
+
+// 좌측메뉴 하위 메뉴 즐겨찾기 토글 
+$(".snb_list li a .favorite").click(function(){
+	$(this).toggleClass("on");
+	return false;
+});
+
+
+
+</script>
+		
+<!-- //snb -->		
+	
+		<!-- content -->
+		<div id="content">
+			<ol class="bread_crumbs">
+				<li class="breadcrumb-item"><img src="commons/coordispace/images/home.png" width="12px" height="12px"/> AirBeacon</li>
+			</ol>	
+			<div class="sub_title_in">
+				<h2>현황지수</h2>
+				<span class="info"> 
+				(2018-09-12 11:00 현재,
+								
+				누적수치는 2018-09-11 24:00 현재)
+				</span>
+			</div>
+			<table class="list_table">
+			<!-- <caption>쿠폰 리스트</caption> -->
+			<colgroup>
+				<col />
+				<col />
+				<col />
+				<col />
+				<col />
+				<col />
+			</colgroup>
+			<thead>
+			<tr>
+				<th scope="col" colspan="5" class="bg-light">비콘 관련</th>
+				<th scope="col" colspan="2" class="bg-light">이벤트(쿠폰발행)</th>				
+			</tr>
+			<tr>
+				<th scope="col">누적 비콘 갯수</th>
+				<th scope="col">누적 진입인원</th>
+				<th scope="col">가동 비콘(현황)</th>
+				<th scope="col">승인대기(현황)</th>
+				<th scope="col">위치측정대기(현황)</th>
+				<th scope="col">누적 발행 수</th>
+				<th scope="col">30일간 누적 발행 수</th>
+			</tr>
+			</thead>
+			<tbody>
+			<!--
+			<tr>
+				<td colspan="6" class="center">등록된 데이타가 없습니다.</td>
+			</tr>
+			-->
+			<tr>
+				<td class="text-center h3 text-dark">19</td>
+				<td class="text-center h3 text-dark">182</td>
+				<td class="text-center h3 text-dark">17</td>
+				<td class="text-center h3 text-dark">1</td>
+				<td class="text-center h3 text-dark">28</td>
+				<td class="text-center h3 text-dark">9</td>
+				<td class="text-center h3 text-dark">6</td>
+			</tr>
+			</tbody>
+			</table>
+
+		
+
+			<!--그래프-->
+			<!--하이차트는 유료 라이센스라 라이센스 구매후 사용해야 될 것   -->
+			<!-- <script type="text/javascript" src="/airbeacon/commons/scripts/graph.js"></script> -->
+			<!--  <div id="container_highchartss" style="height: 248px; width:110%"> -->
+		<!-- 		<div id="event_area" >		
+			 			<canvas id="event_graph" style="height: 248px; width:110%"></canvas>
+				</div> -->
+				
+				
+
+			<div class="notice_qna">
+				<div class="notice">
+					<div class="sub_title_in">
+						<h2>공지사항</h2>
+						<div class="sub_title_in_right">
+							<a class="btn_more" href="/airbeacon/sbNoticeBoard/list.do"><img alt="" src="commons/coordispace/images/btn/btn26.png"><span>더보기</span></a>
+						</div>
+					</div>					
+					<div class="notice_list">
+							
+						<ul>
+							<li>
+								<a class="title" href="javascript:goNoticeBoard(161);"><span>20180903 업로드 테스트</span></a>
+								<span class="date">2018-09-03</span>
+							</li>							
+						</ul>
+							
+						<ul>
+							<li>
+								<a class="title" href="javascript:goNoticeBoard(147);"><span>업로드 경로테스트11</span></a>
+								<span class="date">2018-08-30</span>
+							</li>							
+						</ul>
+							
+						<ul>
+							<li>
+								<a class="title" href="javascript:goNoticeBoard(145);"><span>업로드 경로 테스트3</span></a>
+								<span class="date">2018-08-30</span>
+							</li>							
+						</ul>
+							
+						<ul>
+							<li>
+								<a class="title" href="javascript:goNoticeBoard(144);"><span>업로드 경로 테스트2</span></a>
+								<span class="date">2018-08-30</span>
+							</li>							
+						</ul>
+							
+						<ul>
+							<li>
+								<a class="title" href="javascript:goNoticeBoard(142);"><span>업로드 경로 테스트</span></a>
+								<span class="date">2018-08-30</span>
+							</li>							
+						</ul>
+						
+					</div>
+				</div>
+				<div class="qna">
+					<div class="sub_title_in">
+						<h2>Q&amp;A</h2>
+						<div class="sub_title_in_right">
+							<a class="btn_more" href="/airbeacon/sbBoard/list.do"><img alt="" src="commons/coordispace/images/btn/btn26.png"><span>더보기</span></a>
+						</div>
+					</div>					
+					<div class="qna_list">
+							
+						<ul>
+							<li>
+								<a class="title" href="javascript:goBoard(146);"><span>질문 업로드 경로 테스트</span> 								
+								
+								</a>
+								<span class="date">2018-08-30</span>
+							</li>							
+						</ul>
+							
+						<ul>
+							<li>
+								<a class="title" href="javascript:goBoard(122);"><span>20180801 질문 테스트</span> 								
+								
+									<span class="comment_num">(1)</span>
+								
+								</a>
+								<span class="date">2018-08-01</span>
+							</li>							
+						</ul>
+							
+						<ul>
+							<li>
+								<a class="title" href="javascript:goBoard(82);"><span>측량 어떻게 하나요?</span> 								
+								
+									<span class="comment_num">(1)</span>
+								
+								</a>
+								<span class="date">2018-07-17</span>
+							</li>							
+						</ul>
+						
+					</div>
+				</div>
+			</div>
+			
+			<div class="sub_title_in">
+				<h2>상위 대리점</h2>
+				<span class="info">Top 5</span>
+				<div class="tab_sub tab_branch">
+					<ul>
+						<li class="on"><a href="#event"><span>이벤트 발생</span></a></li>
+						<li><a href="#enter"><span>진입인원</span></a></li>
+					</ul>
+				</div>
+			</div>
+			<table class="list_table list_branch" id="event">
+			<colgroup>
+				<col />
+				<col />
+				<col />
+				<col />
+				<col />
+			</colgroup>					
+					<thead>			
+					<tr>
+						<!-- tway -->	
+						<th scope="col">가맹점1-1 대리점2</th>
+						<!--/ tway -->	
+						<th scope="col"></th>
+						<th scope="col"></th>
+						<th scope="col"></th>
+						<th scope="col"></th>
+					</tr>
+					</thead>
+					<tbody>			
+					<tr>
+						<td class="right">1</td>
+						<td class="right">0</td>
+						<td class="right">0</td>
+						<td class="right">0</td>
+						<td class="right">0</td>
+					</tr>
+					</tbody>						
+			</table>			
+			<table class="list_table list_branch" id="enter" style="display:none">
+			<colgroup>
+				<col />
+				<col />
+				<col />
+				<col />
+				<col />
+			</colgroup>					
+					<thead>
+						<tr>
+							<!-- tway -->	
+							<th scope="col">가맹점1-1 대리2</th>
+							<!--/ tway -->
+							<th scope="col"></th>
+							<th scope="col"></th>
+							<th scope="col"></th>
+							<th scope="col"></th>
+						</tr>
+						</thead>
+						<tbody>			
+						<tr>
+							<td class="right">2</td>
+							<td class="right">0</td>
+							<td class="right">0</td>
+							<td class="right">0</td>
+							<td class="right">0</td>
+						</tr>
+					</tbody>					
+			</table>
+		</div>
+		<!-- //content -->
+	</div>
+	<!-- //container -->
+	<form name="boardfrm" action="/airbeacon/sbBoard/detail.do" method="post" style="display: none;">
+					<input type="hidden" name="idx" value="">
+					<input type="hidden" name="boardGubun" value="Q">					
+	</form>
+	<form name="noticeBoardfrm" action="/airbeacon/sbNoticeBoard/detail.do" method="post" style="display: none;">
+					<input type="hidden" name="idx" value="">
+					<input type="hidden" name="boardGubun" value="N">
+	</form>
+<!-- footer -->
+<footer id="footer" class="text-right small  m-4 text-secondary">
+	<p class="m-0">
+		<span class="footer_info m-1">최근 접속 정보</span><span class="p-1 text-primary">09-12 11:00:12</span><span class="text-primary p-1">IP.0:0:0:0:0:0:0:1</span>
+		<!-- <span class="p-1">© CoordiSpace</span> -->
+	</p>
+</footer>
+<script type="text/javascript">
+function footerbottom(){
+	 var bodyhh131 = $('body').height();
+	 var conhh131 = $('#content').height();
+	 var minnuss1 = bodyhh131-conhh131;
+	 // minuss1이 음수 이면 긴컨텐츠 
+	 // console.log("body"+bodyhh131);
+	 //console.log("content"+conhh131);
+	 //console.log("minus"+minnuss1);
+	 if(minnuss1>80){
+		//alert('1')
+		//$('#content').css('height',bodyhh131);
+		$('#footer').css('position','fixed').css('left','0').css('bottom','0');
+	 } else{
+		//alert('2')
+		$('#content').css('height','auto');
+		$('#footer').css('position','relative').css('left','0').css('bottom','0');
+	 }
+	}
+</script>
+<!-- //footer -->
+</div>
+<!-- //wrap -->
+
+	<script type="text/javascript" >				
+		var dcount = [0,0,0,0,0,0,0];		  
+		var chartData = {
+				labels : [caldate(7), caldate(6), caldate(5), caldate(4), caldate(3), caldate(2), caldate(1)],
+				datasets : [{
+					label : '쿠폰발행수',
+					data : dcount,			
+					backgroundColor: '#20cbc2',
+					borderColor: "#20cbc2",
+					borderWidth: 2,
+					pointStyle: 'circleRot',
+					pointRadius: 5,
+					pointBorderColor: '#20cbc2'
+				}]
+		};
+		$(function () {
+			/*  var returnChart = document.getElementById("event_graph").getContext("2d");
+			new Chart(returnChart, {
+				type: 'bar',
+				data: chartData,
+				options: {
+					responsive: true,
+					maintainAspectRatio: false,
+					title: {
+						display: false,					
+					},
+					tooltips: {
+						position: 'nearest',
+						mode: 'index',
+						intersect: false
+					},
+					legend: {
+						display: true,
+					},
+					scales: {
+				        xAxes: [{
+				            barPercentage: 0.4
+				        }],
+				        yAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'COUNT'
+                              },
+                            ticks: {
+                                beginAtZero: true,
+                                callback: function(value) {if (value % 1 === 0) {return value;}}
+                              }
+                        }]
+					}	
+				}
+			});		 */ 
+	
+	
+			
+			/* $('#container_highchartss').highcharts({
+				title: {
+					text: '진행이벤트',
+					x: -20 //center
+				},
+				subtitle: {
+					text: '쿠폰발행수',
+					x: -20
+				},
+				xAxis: {
+					categories: [caldate(7), caldate(6), caldate(5), caldate(4), caldate(3), caldate(2), caldate(1)]
+				},
+				yAxis: {
+					title: {
+						text: '개'
+					},
+					plotLines: [{
+						value: 0,
+						width: 1,
+						color: '#808080'
+					}]
+				},
+				tooltip: {
+					valueSuffix: ''
+				},
+				legend: {
+					layout: 'vertical',
+					align: 'right',
+					verticalAlign: 'middle',
+					borderWidth: 0
+				},
+				series: [{
+					name: '쿠폰발행수',
+					//data: [1.0, 6.9, 9.5, 14.5]												
+					data: [dcount[0], dcount[1], dcount[2], dcount[3], dcount[4], dcount[5], dcount[6]]
+				}]
+			});  */
+		});
+		
+		// 상위대리점 이벤트 발생 진입인원 탭 선택 시	
+		$('.tab_branch li').click(function(e){
+			var activeTab = $(this).find("a").attr("href");
+			$(this).siblings('li').removeClass('on');
+			$(this).addClass('on');
+			$(activeTab).show();
+			$(activeTab).siblings('.list_branch').hide();
+			return false;
+		});		
+		//var loadDt = new Date(); //현재 날짜 및 시간   //현재시간 기준 계산
+		//alert(new Date(Date.parse(loadDt) - 7 * 1000 * 60 * 60 * 24)); //일주일전
+		//alert(new Date(Date.parse(loadDt) - 1 * 1000 * 60 * 60 * 24)); //하루전				
+		//alert(caldate(7)); //일주일전
+	
+		// 날짜를 입력 하면 오늘 날짜로부터 숫자만큼 전날의 날짜를 yyyy-mm-dd 형식으로 돌려 준다.
+		function caldate(day){			  
+			  var caledmonth, caledday, caledYear;
+			  var loadDt = new Date();
+			  var v = new Date(Date.parse(loadDt) - day*1000*60*60*24);
+			  
+			  caledYear = v.getFullYear();
+			  
+			  if( v.getMonth() < 10 ){
+			  	caledmonth = '0'+(v.getMonth()+1);
+			  }else{
+			  	caledmonth = v.getMonth()+1;
+			  }
+	
+			 if( v.getDate() < 10 ){
+			 	caledday = '0'+v.getDate();
+			 } else {
+			 	caledday = v.getDate();
+			 }
+			 return caledYear+'-'+caledmonth+'-'+caledday;
+		}
+	</script>
+<!--//그래프-->
+</body>
+</html>

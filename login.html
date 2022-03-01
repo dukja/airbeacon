@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<style>
+#capslock {
+    font-size: 11px;
+    line-height: 14px;
+    position: static;
+    margin-top: 8px;
+    padding: 9px 9px 7px;
+    letter-spacing: -1px;
+    color: #777;
+    border: solid 1px #d8d1aa;
+    background: #fffadc;
+}
+
+#capslock b {
+color : #555;
+}
+</style>
+<meta NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>SW 비콘 서비스</title>		
+<!-- tway -->	
+<link rel="icon" type="image/png" href="/tway/commons/tway/images/icon.png"/>
+<link href="/tway/commons/coordispace/css/common.css" rel="stylesheet" type="text/css" />
+<!-- /tway -->
+<link rel="stylesheet" type="text/css" href="/airbeacon/commons/scripts/jqueryUi/css/ui-lightness/jquery-ui-1.8.21.custom.css" />
+<script type="text/javascript" src="/airbeacon/commons/scripts/jquery-latest.min.js"></script>
+<script  src="/airbeacon/commons/scripts/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+<script  type="text/javascript">
+	if($(".bodyWrap").length > 1){
+		$(".bodyWrap").hide();
+		alert("로그아웃 되었습니다.");
+		window.location.reload();
+	}	
+	function checkLogin(){		
+		/* if(document.userId.value.replace(/\s/g, '') == ""){
+			$('#checkId').fadeIn();
+			//document.loginFrm.userId.focus();
+			return ;
+		}
+		
+		if(document.userPw.value.replace(/\s/g, '') == ""){
+			$('#checkPw').fadeIn();
+			return ;
+		} */		
+		document.loginFrm.submit();
+	}	
+	function createGroup(){
+		document.location.href = "/airbeacon/guest.jsp"; 
+	}		
+	$(function(){
+		$('#userPw').keyup(function(e){
+			if(e.keyCode==13){
+				checkLogin();
+			}
+		});
+	});	
+ function caps_lock(e) {
+          var keyCode = 0;
+          var shiftKey = false;
+          keyCode = e.keyCode;
+          shiftKey = e.shiftKey;
+          if (((keyCode >= 65 && keyCode <= 90) && !shiftKey)
+                  || ((keyCode >= 97 && keyCode <= 122) && shiftKey)) {
+              show_caps_lock();
+              setTimeout("hide_caps_lock()", 2500);
+          } else {
+              hide_caps_lock();
+          }
+      }
+ 
+   function show_caps_lock() {
+        $("#capslock").show();
+   }
+
+   function hide_caps_lock() {
+        $("#capslock").hide();
+   }
+</script>
+</head>
+<body class="login">	
+<!-- wrap -->
+<!-- tway -->	
+<div  class=" login h-100">	
+	<div id="wrap" class=" d-flex align-items-center flex-row  ">	
+		<div class="d-flex align-items-stretch  col-12 justify-content-center">
+			<div class="login_wrap col-4">		
+				<div class="bg-white border border-danger box-shadow">
+					<!-- login -->
+					<div class="login_logo ">
+						<div class="text-center d-flex align-items-center ">
+							<span class="logo "></span>
+							<span class="title d-flex  flex-column text-left ml-auto justify-content-end"><span class="ml-auto">airBeacon</span>  <sub>Hpoint Location Based Service</sub></span>
+						</div>
+					</div>
+					<div class="login_area card ">
+						<form method="POST" name="loginFrm" action="./login" > 
+							<fieldset class="login_form card-body">
+								<div class="login_id pb-2">
+									<label for="loginId">ID</label>
+									<input id="userId" type="text" title="ID" value="" class="placeholder form-control rounded-0 small font-weight-normal" name="userId" placeholder="id"/>
+								</div>
+								<div class="login_pw mt-2 pb-2">
+									<label for="loginPw">PW</label>
+									<input id="userPw" type="password" title="Password" value="" class="placeholder form-control rounded-0 small font-weight-normal" name="userPw" placeholder="password" onkeypress="caps_lock(event)"/>
+									<p id="capslock" style="position:relative; border:2px solid #003b83; width:300px; bottom:0px; display:none"> 
+									&nbsp;<b>CapsLock</b> 키가 활성화 되어 있습니다.&nbsp;</p>
+								</div>
+								<a class="btn_brand btn_login btn w-100 mt-2 rounded-0 small font-weight-normal" href="javascript:checkLogin();"><span>로그인</span></a>				
+							</fieldset>
+						</form>
+					</div>
+					<!-- //login -->					
+				</div>
+
+			</div>
+		</div>
+		<!-- footer -->
+		<footer id="footer" class="text-right small  m-4 text-secondary">
+			<p class="m-0">
+				<span class="footer_info m-1">최근 접속 정보</span>
+				<span class="p-1 text-primary">			 
+					09-12 11:09:55
+				</span>
+				<span class="text-primary p-1">IP.0:0:0:0:0:0:0:1</span>
+			</p>		
+			<p class="p-1 m-0">본 시스템은 접근이 승인된 사용자에 한하여 사용하실 수 있습니다. 불법적인 접근 및 사용시 관련 법규에 의해 처벌될 수 있습니다<span class="p-1">© CoordiSpace</span></p>
+					
+		</footer>
+		<!-- //footer -->
+	</div>
+</div>
+<!-- /tway -->	
+<!-- //wrap -->
+<!-- popup 회원정보변경 완료 -->
+<div class="popup popup_member_modify popup_member_modify" id="checkId">
+	<div class="popup_in">
+		<p>아이디가 입력되지 않았습니다.</p>
+		<a class="btn_system btn_popclose" href="#link"><span>확인</span></a>
+	</div>
+</div>
+<div class="popup popup_member_modify popup_member_modify" id="checkPw">
+	<div class="popup_in">
+		<p>비밀번호가 입력되지 않았습니다.</p>
+		<a class="btn_system btn_popclose" href="#link"><span>확인</span></a>
+	</div>
+</div>
+<!-- //popup 회원정보변경 완료 -->
+<script type="text/javascript">
+// 로그인 ID PW placeholder
+$(".placeholder").focus(function() {
+	var value=$(this).val();
+	$(this).addClass("login_input_focus");
+});
+$(".placeholder").blur(function() {
+	if($(this).val()=="") {
+		$(this).removeClass("login_input_focus");
+	}
+});
+//팝업 공통 닫기
+$('.btn_popclose').click(function(e){
+	$(this).parents('.popup').fadeOut();
+	$(".popup_dim").fadeOut();
+	return false;
+});
+</script>
+<script type="text/javascript">
+function footerbottom(){
+	 var bodyhh131 = $('body').height();
+	 var conhh131 = $('#content').height();
+	 var minnuss1 = bodyhh131-conhh131;
+	// minuss1이 음수 이면 긴컨텐츠 
+	/* console.log("body"+bodyhh131);
+	console.log("content"+conhh131);
+	console.log("minus"+minnuss1); */
+	if(minnuss1>80){
+		//alert('1')
+		//$('#content').css('height',bodyhh131);
+		$('#footer').css('position','fixed').css('left','0').css('bottom','0');
+	 } else{
+		//alert('2')
+		$('#content').css('height','auto');
+		$('#footer').css('position','relative').css('left','0').css('bottom','0');
+	 }
+}
+$(document).ready(function(){
+	footerbottom();
+	$(window).resize(function(){
+		footerbottom();
+	}).resize();
+	$('.btn_snb_close').click(function () {
+		$('body').css('background','white');
+	});
+	$('.btn_snb_open').click(function () {
+		$('body').css('background',"url('../images/lbp.png') repeat-y 0 0");
+	});
+});
+</script>
+</body>
+</html>

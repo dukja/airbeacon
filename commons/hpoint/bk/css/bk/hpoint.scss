@@ -1,0 +1,112 @@
+// 수정180914
+$color-brand:#24d4d2  !important;
+$color-body:#222222 !important;
+$color-secondary:#bac0ca !important;
+$color-black-secondary:#829c9d;
+.snb{
+	position:fixed!important;
+	height: 100% !important;
+	background-color:#2f4050;
+	border-right:3px solid $color-brand;
+	top:64px;
+	bottom:0px;
+	border-bottom:0px !important;
+	overflow:scroll;
+}
+body.login{
+	background-image: linear-gradient(to bottom, rgba(0, 56, 90, 1), rgba(0, 13, 17, 1)) !important;	
+}
+body .login{
+	background-image: linear-gradient(to bottom, rgba(0, 56, 90, 1), rgba(0, 13, 17, 1)) !important;	
+}
+body .login #wrap{
+	background: url("/airbeacon/commons/hpoint/images/bg-login.png") no-repeat 20% 50%  ;
+}
+.login_wrap{
+    background-color: rgba(255, 255, 255, .2) !important;
+    margin-left: 400px;
+    color:#fff;
+    border:1px solid $color-black-secondary;
+
+}
+.login_wrap .login_logo .title{
+	color:#ffffff;
+}
+// 수정-
+.logo_dev{
+    .brand{
+		background:url('/airbeacon/commons/hpoint/images/logo.png')!important;
+		width: 140px!important;
+		height: 40px !important;
+	}
+}
+.login_logo .logo{
+	background-image:url('/airbeacon/commons/hpoint/images/logo_black.png') !important;
+	width: 194px; 
+	height: 40px !important;
+	background-repeat:no-repeat;
+}
+.btn_brand{
+	background: $color-brand ;
+	border-color: $color-brand ;
+	color: $color-body;
+	&:hover{
+		background-color: #258772 !important;
+    	border-color: #258772 !important;
+	}
+	&:not(:disabled):not(.disabled):active{
+		color: $color-body;
+	    background-color: #258772 !important;
+	    border-color: #258772 !important;
+	}
+}
+// 컬러
+.breadcrumb .active{
+	color:$color-brand!important;	
+}
+.snb_util ul .on a {
+    background: $color-secondary;
+    color:$color-body;
+}
+// 수정180914
+.snb .snb_list ul li ul{
+	border-bottom: 1px solid #445362 !important;
+}
+.snb .snb_list ul li a{
+	color:#bac0ca !important;
+
+	border-bottom: 1px solid #445362 !important;
+}
+.snb .snb_list a.btn_allmenu span{
+	color:#bac0ca !important;
+}
+.snb_list > ul > li > ul > li.on > a{
+	color:#fff !important;
+	background-color:#1d2e3e!important;
+	background-image:none!important;
+}
+.snb_util ul{
+	border-bottom: 1px solid #445362;
+}
+.snb_util ul li a{
+	background-color:#1d2e3e;
+	color: #bac0ca !important;
+}
+.nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover{
+	border-color: #1d2e3e #1d2e3e #1d2e3e;
+}
+#header{
+	background-image: linear-gradient(to bottom, rgba(45, 62, 78, 1), rgba(23, 38, 49, 1)) !important;
+	background-repeat:no-repeat !important;
+	.material-icons {
+	    color: #bfc4c9 !important;
+	}
+}
+.snb_list > ul > li > a.open{
+	background:$color-brand ;
+	color:$color-body ;
+}
+.snb_list#snb_favorite > ul > li.on > a {
+  color: #fff !important;
+}
+// 수정-

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+		<!-- tway -->	
+		<link rel="icon" type="image/png" href="/tway/commons/tway/images/icon.png"/>
+		<link href="/tway/commons/coordispace/css/common.css" rel="stylesheet" type="text/css" />
+		<!-- /tway -->
+		<title>SW 비콘 서비스</title>	
+		<script type="text/javascript" src="/airbeacon/commons/hpoint/export/jquery-latest.min.js"></script>
+		<script  src="/airbeacon/commons/hpoint/export/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+		
+		<script type="text/javascript">
+		/* $(document).ready(function(){
+			
+			$.ajax({
+				type: "POST",
+				url: "/airbeacon/wbCommon/authorityInfo",
+				dataType: "json",
+				async: false,
+				data:{			
+				},
+				success: function(data){									
+					var element = $(".tel");
+					element.empty();
+					if( data !== null ){
+						var count = data.wbAuthorityTel;
+						$.each(count, function(i){											
+							var cnt = count.comment;
+							document.frm.tel.text = cnt;
+						});							
+					}
+				},
+				beforeSend: function(){						
+				},
+				error: function(jqXHR, textStatus, errorThrown){
+					//alert(jqXHR.responseText); //에러 페이지 내용
+					// 비밀번호가 맞지 않습니다.
+					alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+					throw errorThrown;
+				},
+				complete: function(){
+					
+				}
+			});
+			
+			
+			
+		}); */
+		</script>
+	</head>
+	<body class="login">
+	<div  class="error login h-100">	
+	<div id="wrap" class=" d-flex align-items-center flex-row  ">	
+			<!-- tway -->
+			<div class="d-flex align-items-stretch  col-12 justify-content-center">		
+				<div class="login_wrap col-4">
+					<div class="bg-white border border-danger box-shadow">
+						<div class="login_logo p-4">	
+							<div class="text-center d-flex align-items-center justify-content-between ">
+									<span class="d-inline logo "></span><span class="title d-flex  flex-column text-left">오류 안내</span>
+							</div>													
+						</div>
+						<div class="error_area card">
+							<div class="card-body">	
+								<p class="error_con  text-center">											
+									<span class="text-danger">ERROR. 문제가 발생하였습니다.</span>  <br />SW 비콘 서비스 담당자(<span id="authTel"></span>)</em>에게 문의해 주시기 바랍니다. 		
+								</p>
+								<div class="btn_center d-flex align-items-center justify-content-between">
+									<a class="btn btn-light btn-sm" href="javascript:window.history.back(-1);"><i class="material-icons md-small">keyboard_arrow_left</i><!-- <img src="/airbeacon/commons/coordispace/images/chevron-left.png" width="9px" height="14px" style=" vertical-align : baseline;"/> --> 이전 페이지로</a>
+									<a class="btn btn-light btn-sm" href="/airbeacon/"><i class="material-icons md-small">home</i> <!-- <img src="/airbeacon/commons/coordispace/images/home_blue.png" /> -->메인으로</a>
+								</div>   
+							</div>	
+						</div>
+					</div>
+								
+				</div>
+			</div>	
+			<!-- footer -->
+			<footer id="footer" class="text-right small  m-4 text-secondary">
+				<p class="m-0">
+					<span class="footer_info m-1">최근 접속 정보</span>
+					<span class="p-1 text-primary">
+						09-12 11:14:37
+					</span>
+					<span class="text-primary p-1">IP.0:0:0:0:0:0:0:1</span>
+				</p>
+				<p class="p-1 m-0">본 시스템은 접근이 승인된 사용자에 한하여 사용하실 수 있습니다. 불법적인 접근 및 사용시 관련 법규에 의해 처벌될 수 있습니다<span class="p-1">© CoordiSpace</span></p>
+			</footer>
+			<!-- /tway -->	
+			<!-- //footer -->			
+	</div>					
+	</body>
+</html>

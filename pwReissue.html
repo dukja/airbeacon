@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+		<title>SW 비콘 서비스</title>	
+		<!-- tway -->	
+		<link rel="icon" type="image/png" href="/tway/commons/tway/images/icon.png"/>
+		<link href="/tway/commons/coordispace/css/common.css" rel="stylesheet" type="text/css" />
+		<!-- /tway -->
+		<script type="text/javascript" src="/airbeacon/commons/hpoint/export/jquery-latest.min.js"></script>
+		<script  src="/airbeacon/commons/hpoint/export/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+		<link rel="stylesheet" type="text/css" href="/airbeacon/commons/scripts/jqueryUi/css/ui-lightness/jquery-ui-1.8.21.custom.css" />
+		<script type="text/javascript">
+		
+		$(document).ready(function(){
+						
+			$("#pw_new").keyup(function() {
+				
+				var pw = document.frm.password.value;
+				var pw_confirm = document.frm.pw_confirm.value;
+				
+				if (check(pw) == false) {
+					$("#pwCheck").text("불가능");
+					document.getElementById('divpass').className="pw_new input_wrong";
+					
+				}else{					
+					$("#pwCheck").text("가능");
+					document.getElementById('divpass').className="pw_new input_pass";
+				}
+				
+				if (pw_confirm == pw) {
+					$("#pwConfirm").text("일치");
+					document.getElementById('divconfirmpass').className="pw_new input_pass";					
+				} else if(pw_confirm != pw) {
+					$("#pwConfirm").text("불일치");
+					document.getElementById('divconfirmpass').className="pw_new input_wrong";
+				}	
+				
+			});
+			
+			$("#pw_confirm").keyup(function() {
+				
+				var pw = document.frm.password.value;
+				var pw_confirm = document.frm.pw_confirm.value;
+				
+				if (pw_confirm == pw) {	
+					
+					$("#pwConfirm").text("일치");
+					document.getElementById('divconfirmpass').className="pw_confirm input_pass";
+					
+				} else if(pw_confirm != pw) {
+					$("#pwConfirm").text("불일치");
+					document.getElementById('divconfirmpass').className="pw_confirm input_wrong";
+				}								
+			});						
+		});
+		
+		function checkLogin(pw){
+			
+			 var userId = document.frm.id.value;
+			 var num = pw.search(/[0-9]/g);
+			 var eng = pw.search(/[a-z]/ig);
+			 var spe = pw.search(/([!,@,#,$,%,^,&,*,?,_,~])|([!,@,#,$,%,^,&,*,?,_,~])/gi);
+			
+			if(pw.length < 8 || num < 0 || eng < 0 || spe < 0){
+				$('#checkLength').fadeIn();
+				  return false;
+			 }				 
+			if (pw.search(userId)>-1) {
+				$('#checkInclude').fadeIn();
+				  return false;
+			}					
+			
+			// 동일한 문자/숫자 4이상, 연속된 문자
+	        if(/(\w)\1/.test(pw) || isContinuedValue(pw))
+	        {
+	        	$('#checkPw').fadeIn();
+	            return false;
+	        }
+			
+		}	
+		
+		function check(pw){
+			
+			
+			 var userId = document.frm.id.value;
+			 var num = pw.search(/[0-9]/g);
+			 var eng = pw.search(/[a-z]/ig);
+			 var spe = pw.search(/([!,@,#,$,%,^,&,*,?,_,~])|([!,@,#,$,%,^,&,*,?,_,~])/gi);
+					 
+			 
+			if(pw.length < 8 || num < 0 || eng < 0 || spe < 0){
+				  document.frm.password.focus();
+				  return false;
+			 }				 
+			if (pw.search(userId)>-1) {
+				 document.frm.password.focus();
+				 return false;
+			}					
+			
+			// 동일한 문자/숫자 4이상, 연속된 문자
+	        if(/(\w)\1/.test(pw) || isContinuedValue(pw))
+	        {
+	            document.frm.password.focus();
+	            return false;
+	        }
+		
+		}
+		
+		function isContinuedValue(value) {
+	       
+	        var intCnt1 = 0;
+	        var intCnt2 = 0;
+	        var temp0 = "";
+	        var temp1 = "";
+	        var temp2 = "";
+	        var temp3 = "";
+	 
+	        for (var i = 0; i < value.length-3; i++) {
+	           
+	            temp0 = value.charAt(i);
+	            temp1 = value.charAt(i + 1);
+	            temp2 = value.charAt(i + 2);
+	            temp3 = value.charAt(i + 3);	 
+	           
+	            if (temp0.charCodeAt(0) - temp1.charCodeAt(0) == 1
+	                    && temp1.charCodeAt(0) - temp2.charCodeAt(0) == 1
+	                    && temp2.charCodeAt(0) - temp3.charCodeAt(0) == 1) {
+	                intCnt1 = intCnt1 + 1;
+	            }
+	 
+	            if (temp0.charCodeAt(0) - temp1.charCodeAt(0) == -1
+	                    && temp1.charCodeAt(0) - temp2.charCodeAt(0) == -1
+	                    && temp2.charCodeAt(0) - temp3.charCodeAt(0) == -1) {
+	                intCnt2 = intCnt2 + 1;
+	            }	           
+	        }
+	        return (intCnt1 > 0 || intCnt2 > 0);
+	    }
+		
+		function checkPw(pw){
+						
+						if (pw != ""){
+							$.ajax({
+								type: "POST",
+								url: "/airbeacon/sbUsers/checkPassword",
+								dataType: "json",
+								async: false,
+								data:{			
+									"password" : pw
+								},
+								success: function(data){									
+									var element = $("#passwordCheck");
+									element.empty();
+									if( data !== null ){
+										var count = data.passWordCheck;
+										$.each(count, function(i){											
+											var cnt = count.pwCount;
+											document.frm.passwordCheck.value = cnt;
+										});							
+									}
+								},
+								beforeSend: function(){						
+								},
+								error: function(jqXHR, textStatus, errorThrown){
+									//alert(jqXHR.responseText); //에러 페이지 내용
+									// 비밀번호가 맞지 않습니다.
+									alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+									throw errorThrown;
+								},
+								complete: function(){
+									
+								}
+							});
+						}
+						
+		}
+
+			
+		function validation(){ 
+			
+				var pwExisting = document.frm.pw_existing.value;
+				var password = document.frm.password.value;				
+				var pw_confirm = document.frm.pw_confirm.value;
+				
+				checkPw(pwExisting);
+				
+				var passwordCheck  = document.frm.passwordCheck.value;
+					
+				if((document.frm.pw_existing.value).replace(/\s/g, '') == ""){					
+					document.frm.pw_existing.focus();
+					return ;
+				}
+				
+				if((document.frm.password.value).replace(/\s/g, '') == ""){					
+					document.frm.password.focus();
+					return ;
+				}
+				
+				if((document.frm.pw_confirm.value).replace(/\s/g, '') == ""){					
+					document.frm.pw_confirm.focus();
+					return ;
+				}
+				
+				if(password != pw_confirm){					
+					document.frm.pw_confirm.focus();
+					return ;
+				}
+								
+				if (checkLogin(password) == false ) {
+					return ;	
+				} 				
+				
+				if (passwordCheck == 0) {
+					
+					$('#checkPassword').fadeIn();
+					return ;
+					
+				} 
+			
+				if (passwordLimitCheck()) {
+					return ;
+				}
+				
+			$('#finishLogin').fadeIn();
+			
+		}
+		function passwordLimitCheck(){
+			
+			var id = document.frm.id.value;
+			var password = document.frm.password.value;
+
+			$.ajax({
+				type: "POST",
+				url: "/airbeacon/sbUsers/selectPasswordLimit",
+				dataType: "json",
+				async: false,
+				data: {
+							"id" : id,
+							"password" : password
+						},
+				success: function(data){
+					checkResult = data;
+				 	if (eval(checkResult)) {
+				 		alert("이미 사용했던 비밀번호 입니다.");
+					}							
+				},
+				beforeSend: function(){
+				},
+				error: function(jqXHR, textStatus, errorThrown){
+					//alert(jqXHR.responseText); //에러 페이지 내용
+					alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+					throw errorThrown;
+				},
+				complete: function(){
+				}
+			 });
+			return eval(checkResult);
+		}
+		</script>
+		<!-- 브라우져 -->
+		<title>SW 비콘 서비스</title>
+</head>
+<body class="login">
+<div  class=" login h-100">	
+	<!-- wrap -->
+	<!-- tway -->	
+	<div id="wrap" class=" d-flex align-items-center flex-row  ">	
+		<div class="d-flex align-items-stretch  col-12 justify-content-center">		
+			<div class="login_wrap col-4">
+				<div class="bg-white border border-danger box-shadow">
+					<div class="login_logo p-4 ">
+						<div class="text-center d-flex align-items-center justify-content-between ">
+							<span class="d-inline logo"></span><span class="title d-flex  flex-column text-left">비밀번호 변경</span>
+						</div>
+					</div>							
+					<!-- login -->
+					<form id="frm" name="frm" method="post" action="/airbeacon/sbUsers/pwChange.do" onsubmit="return validation();" class="card">
+						<input type="hidden" name="id" value="">
+						<div class="pw_change card-body">
+							<p class=" text-left small">안전한 서비스 제공을 위하여 최초 로그인시에는 비밀번호를 변경해야 합니다. 또한 보안 규정에 의거하여 서비스 사용 3개월마다 비밀번호를 변경하셔야 합니다.</p>	
+							<div class="pw_existing">
+								<input id="pw_existing" type="password" value="" name="pw_existing"  placeholder="기존 비밀번호" class="form-control small"  />
+								<input type="hidden" id="passwordCheck" value="">
+							</div>
+							<p class="pw_info mt-2 small">※ 8자 이상 숫자, 영문자, 특수문자를 반드시 포함 하여야 합니다.</p>
+							
+							<!-- 정규식 체크시 일치일 때는 input_pass 클래스 추가 / 불가능 일 때는 input_wrong 추가 -->
+							<div class="pw_new input_wrong" id="divpass">
+								<input id="pw_new" type="password" value="" name="password"  placeholder="신규 비밀번호" class="form-control small"/>				
+								<span class="input_notice"  id ="pwCheck" ></span> 				
+							</div>
+							<div class="pw_confirm input_wrong mt-2" id="divconfirmpass">
+								<input id="pw_confirm" type="password" value="" name="pw_confirm"  placeholder="비밀번호 확인" class="form-control small" />
+								<span class="input_notice" id="pwConfirm"></span>
+							</div>
+							<a class="btn_brand btn btn-sm small btn-primary w-100 mt-2" id="btn_pw_change" href="javascript:validation();"><span>수정</span></a>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- //login -->
+		<!-- footer -->
+		<footer id="footer" class="text-right small  m-4 text-secondary">
+			<p class="m-0">
+				<span class="footer_info m-1">최근 접속 정보</span>
+				<span class="p-1 text-primary"> 
+						09-12 11:13:00
+				</span>
+				<span class="text-primary p-1">IP.0:0:0:0:0:0:0:1</span>
+			</p>
+			<p class="p-1 m-0">본 시스템은 접근이 승인된 사용자에 한하여 사용하실 수 있습니다. 불법적인 접근 및 사용시 관련 법규에 의해 처벌될 수 있습니다<span class="p-1">© CoordiSpace</span></p>
+		</footer>
+		
+		<!-- //footer -->
+	
+	</div>
+	<!-- / tway -->	
+	<!-- //wrap -->
+</div>	
+	
+	
+	
+<!-- popup 회원정보변경 완료 -->
+<div class="popup popup_member_modify popup_member_modify" id="checkLength">
+	<div class="popup_in">
+		<p>비밀번호는 영문, 숫자, 특수문자를 반드시 조합하여 8자리 이상이어야 합니다.</p>
+		<a class="btn_system btn_popclose" href="#link"><span>확인</span></a>
+	</div>
+</div>
+<div class="popup popup_member_modify popup_member_modify" id="checkInclude">
+	<div class="popup_in">
+		<p>ID가 포함된 비밀번호는 사용하실 수 없습니다.</p>
+		<a class="btn_system btn_popclose" href="#link"><span>확인</span></a>
+	</div>
+</div>
+<div class="popup popup_member_modify popup_member_modify" id="checkPassword">
+	<div class="popup_in">
+		<p>기존 비밀번호가 일치하지 않습니다.</p>
+		<a class="btn_system btn_popclose" href="#link"><span>확인</span></a>
+	</div>
+</div>
+<div class="popup popup_member_modify popup_member_modify" id="checkPw">
+	<div class="popup_in">
+		<p>비밀번호는 연속되는 문자나 숫자, 반복문자나 숫자를 사용할 수 없습니다.</p>
+		<a class="btn_system btn_popclose" href="#link"><span>확인</span></a>
+	</div>
+</div>
+<div class="popup popup_member_modify popup_member_modify" id="finishLogin">
+	<div class="popup_in">
+		<p>비밀번호 변경이 완료되었습니다. 로그인 페이지로 이동합니다.</p>
+		<a class="btn_system btn_popclose" href="#link" id="finishCheck"><span>확인</span></a>
+	</div>
+</div>
+<!-- //popup 회원정보변경 완료 -->
+<script type="text/javascript">
+// PW placeholder
+$(".pw_change input").focus(function(e) {
+	var value=$(this).val();
+	$(this).prev("label").hide();
+});
+$(".pw_change input").blur(function() {
+	if($(this).val()=="") {
+		$(this).prev("label").show();
+	}
+});
+//팝업 공통 닫기
+$('.btn_popclose').click(function(e){
+	$(this).parents('.popup').fadeOut();
+	$(".popup_dim").fadeOut();
+	return false;
+});
+
+$('#finishCheck').click(function(e){
+	
+	document.frm.submit();		
+	
+}); 
+</script>
+</body>
+</html>

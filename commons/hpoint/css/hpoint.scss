@@ -1,0 +1,145 @@
+// 수정180914
+$color-brand:#24d4d2  !important;
+$color-body:#222222 !important;
+$color-secondary:#bac0ca !important;
+$color-black-secondary:#829c9d;
+
+#header{
+	background-image: linear-gradient(to bottom, rgba(45, 62, 78, 1), rgba(23, 38, 49, 1)) !important;
+	background-repeat:no-repeat !important;
+	.material-icons {
+	    color: #bfc4c9 !important;
+	}	
+	.logo_dev{
+		.brand{
+			height: 30px;
+			width: 72px;
+			background:url('../images/logo.png');
+			background-size: 100% 100% ;
+		}
+	}
+}
+
+// 수정180914
+// body.login{
+// 	background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 1)) !important;	
+
+// }
+
+
+// body .login #wrap{
+// 	background: url("../images/bg-login.png") no-repeat 20% 50%  ;
+// 	margin:0px auto;
+// }
+.card {
+   min-width: 0px !important;
+}
+
+.login_wrap{
+    background-color: rgba(255, 255, 255, .2) !important;
+    // margin-left: 400px;
+    color:#fff;
+    // border:1px solid $color-black-secondary;
+    border-radius:0px !important;
+	.login_logo, .card-body{
+		padding:1.5rem;
+
+	}	
+	.btn_brand{
+		background-color:$color-secondary;
+		border-color:$color-secondary;
+	}
+	.logo{
+		background-image:url('../images/logo_black.png') !important;
+		width: 121px !important;
+		height: 40px !important;
+		background-repeat:no-repeat;	
+		img{
+			width: 100px;
+		}
+	}	
+	.title{
+		color:#ffffff;
+	}
+		
+}
+
+
+// 수정-
+.logo_dev{
+    .brand{
+		background:url('../images/logo.png')!important;
+		width: 140px!important;
+		height: 40px !important;
+	}
+}
+
+.btn_brand{
+	background: $color-brand ;
+	border-color: $color-brand ;
+	color: $color-body;
+	&:hover{
+		background-color: #258772 !important;
+    	border-color: #258772 !important;
+	}
+	&:not(:disabled):not(.disabled):active{
+		color: $color-body;
+	    background-color: #258772 !important;
+	    border-color: #258772 !important;
+	}
+}
+// 컬러
+.breadcrumb .active{
+	color:$color-brand!important;	
+}
+.snb_list>ul>li>ul>li.on>a {color:#fff;background:$color-brand url(../images/snb_2depth.png) no-repeat 10px -31px;}
+.snb{
+	position:fixed!important;
+	height: 100% !important;
+	background-color:#2f4050;
+	border-right:3px solid $color-brand;
+	top:64px;
+	bottom:0px;
+	border-bottom:0px !important;
+	overflow:auto;
+}
+.snb_util ul .on a {
+    background: $color-secondary;
+    color:$color-body;
+}
+// 수정180914
+.snb .snb_list ul li ul{
+	border-bottom: 1px solid #445362 !important;
+}
+.snb .snb_list ul li a{
+	color:#bac0ca !important;
+
+	border-bottom: 1px solid #445362 !important;
+}
+.snb .snb_list a.btn_allmenu span{
+	color:#bac0ca !important;
+}
+.snb_list > ul > li > ul > li.on > a{
+	color:#fff !important;
+	background-color:#1d2e3e!important;
+	background-image:none!important;
+}
+.snb_util ul{
+	border-bottom: 1px solid #445362;
+}
+.snb_util ul li a{
+	background-color:#1d2e3e;
+	color: #bac0ca !important;
+}
+.nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover{
+	border-color: #1d2e3e #1d2e3e #1d2e3e;
+}
+
+.snb_list > ul > li > a.open{
+	background:$color-brand ;
+	color:$color-body ;
+}
+.snb_list#snb_favorite > ul > li.on > a {
+  color: #fff !important;
+}
+// 수정-

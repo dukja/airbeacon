@@ -1,0 +1,2910 @@
+<!DOCTYPE html>
+<head>
+<meta NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>SW 비콘 서비스</title>		
+<link rel="icon" type="image/png" href="/airbeacon/commons/coordispace/images/icon-hpoint.png"/>
+<!-- tway -->	
+<link rel="icon" type="image/png" href="/tway/commons/tway/images/icon.png"/>
+<link href="/tway/commons/coordispace/css/common.css" rel="stylesheet" type="text/css" />
+<!-- /tway -->
+<script type="text/javascript" src="/airbeacon/commons/scripts/jquery-latest.min.js"></script>
+<script  src="/airbeacon/commons/scripts/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>	
+</head>
+<body>
+<!-- wrap -->
+<div id="wrap">
+	<!-- header -->
+	<div id="header">
+		<div class="mdc-toolbar__section d-flex flex-row">
+			<span class="icon-large btn_snb_open btn btn-lg" href="#link" style="padding: 1rem ; text-align: center ; display : none">
+				<i class="material-icons" title="전체메뉴">menu</i>
+			</span>
+			<span class="icon-large btn_snb_close btn btn-lg" href="#link" style="padding: 1rem ; text-align: center;">
+				<i class="material-icons" title="전체메뉴">menu</i>
+			</span>
+			<h1 class="logo_dev "><a href="/airbeacon/" class="btn btn-lg d-flex align-items-center"><span class="brand" alt="SW비콘 서비스"/></span><span class="mx-2">|</span><span class="font-weight-bold pr-2">airBeacon</span><span>Hpoint Location Based Service</span></a>
+			</h1>	
+		</div>
+        <ul class="header_util">
+            <li class="user" >
+                <a class="btn btn-lg"><i class="material-icons" >person</i> admin 님</a>
+            </li>            
+            <li class="btn_user_modify"><a href="/airbeacon/sbUsers/userForm.do" class="btn btn-lg"><i class="material-icons" title="사용자설정">settings</i></a></li>
+            <li class="btn_logout" ><a  href="#" onclick="out();" class="btn btn-lg"><i class="material-icons" title="로그아웃">exit_to_app</i></a></li>      
+        </ul>
+	</div>
+
+<!-- //header -->
+<script type="text/javascript">
+function out(){
+	$.ajax({
+		type: "POST",
+		url: "/airbeacon/sbUsers/logout",
+		dataType: "json",
+		async: false,
+		data: {
+		},
+		success: function(data){
+		},
+		beforeSend: function(){
+		},
+		error: function(jqXHR, textStatus, errorThrown){
+			// alert(jqXHR.responseText); //에러 페이지 내용
+			alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+			throw errorThrown;
+		},
+		complete: function(){
+			location.href="/airbeacon/logout";
+		}
+	});
+	
+}
+</script>
+<!-- container -->
+<div id="container">
+<script type="text/javascript">
+var _is_gobal_menu_open = false; 
+
+$(document).ready(function(){
+	
+	$.ajax({
+		type : "POST",
+		url : "/airbeacon/sbMenu/leftMenu",
+		dataType : "json",
+		async : false,
+		data : {
+			callURL : "/airbeacon/sbEvent/addEventForm.do",
+			refer : "http://localhost:8080/airbeacon/sbEvent/eventList.do"
+		},
+		success : function(data) {
+			if(data !== null){	
+				$("#snb_menu > ul").append(data.append);
+				//console.log(data.append);
+			}
+			
+		},
+		beforeSend : function() {
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			//alert(jqXHR.responseText); //에러 페이지 내용
+			alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+			throw errorThrown;
+		},
+		complete : function() {
+		}
+	});
+	
+	resetclickE();
+	
+	// 레벨 1단계 메뉴 뽑기
+	$( "#snb_menu>ul>li>a" ).each(function( index ) {
+	  //console.log( index + ": " + $( this ).text() + " : class-" + $( this ).hasClass('open') );
+	  if($( this ).hasClass('open')){
+		  $("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 닫기");
+		  return false;
+	  }
+	});
+	
+});
+//클릭이벤트의 재등록
+function resetclickE(){
+	
+	$("#snb_menu>ul>li>a").unbind('click'); //페이지 변경없이 다시불러온다면 필요 이벤트를 한번 지웠다 주게됨
+	
+	$("#snb_menu>ul>li>a").on('click',function(){
+		$(this).next("ul").slideToggle("fast");
+		$(this).toggleClass("open");
+		$("#snb_menu .btn_allmenu").removeClass("open");
+		$("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 열기");
+		
+		// 레벨 1단계 메뉴 뽑기
+		$( "#snb_menu>ul>li>a" ).each(function( index ) {
+		  //console.log( index + ": " + $( this ).text() + " : class-" + $( this ).hasClass('open') );
+		  if($( this ).hasClass('open')){
+			  $("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 닫기");
+			  return false;
+		  }
+		});
+		
+		return false;
+	});
+	
+	$(".snb_list li a .favorite").unbind('click'); //페이지 변경없이 다시불러온다면 필요 이벤트를 한번 지웠다 주게됨
+	
+	$(".snb_list li a .favorite").click(function(){
+		//alert($(this).next().val());  하위메뉴의 idx값 
+		//메뉴의 idx 값을 알기위해 형제로 input hidden을 만들었음.
+		$(this).toggleClass("on");
+		favariteinout($(this));
+		
+		return false;
+	});
+	$(".on").parent().css("display","block");
+	$(".on").parent().prev().toggleClass("open");
+	
+	var openclose = $('.snb_list a').hasClass('open');
+	if(openclose){
+		$("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 열기");
+	}
+	else {
+		$("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 닫기");
+	}
+	
+	$("#snb_menu li").click(function(){		
+		var openclose2 = $('.snb_list a').hasClass('open');
+		if(openclose2){$("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 열기");}
+		else {$("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 닫기");}
+		
+		// 레벨 1단계 메뉴 뽑기
+		$( "#snb_menu>ul>li>a" ).each(function( index ) {
+		  //console.log( index + ": " + $( this ).text() + " : class-" + $( this ).hasClass('open') );
+		  if($( this ).hasClass('open')){
+			  $("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 닫기");
+			  return false;
+		  }
+		});
+	});	
+}
+function favariteinout(getobj){
+	
+	var checkname;
+	
+	//즐겨찾기 텝에 있는 거는 즐찾 버튼을 누르면 li가 사라진다.
+	if(getobj.hasClass("faon") == true){//faon은 알아보기위해 임의로 준 클래스
+		checkname=getobj.prev().text();//실제 메뉴에서 클래스 favorite on 인 것에서 즐찾 삭제된것의 이름
+		getobj.closest('li').remove();
+	}
+	
+	if(getobj.hasClass("on") == true){
+		alert("즐겨찾기에 등록합니다.");
+		//S- 즐겨찾기 등록 Ajax
+		
+		var didx = $(getobj).next().val();
+		
+		$.ajax({
+		type : "POST",
+		url : "/airbeacon/sbMenu/insertfav",
+		dataType : "json",
+		async : false,
+		
+		data : {
+			idx : didx
+		},
+		success : function(data) {
+		},
+		beforeSend : function() {
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			//alert(jqXHR.responseText); //에러 페이지 내용
+			alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+			throw errorThrown;
+		},
+		complete : function() {
+		}
+	});
+		
+		
+		
+		//E- 즐겨찾기 등록 Ajax
+		
+	}else{
+		alert("즐겨찾기에서 삭제합니다.");
+		
+		//S-삭제된 즐겨찾기를 메뉴쪽에서도 on을 토글
+		if (checkname != null){
+			
+		for(var p=0; p<$(".favorite.on").size(); p++){
+		if($(".favorite.on").eq(p).prev().text()==checkname){
+					$(".favorite.on").eq(p).toggleClass("on");
+				}
+			}
+		}
+		//E-삭제된 즐겨찾기를 메뉴쪽에서도 on을 토글
+		
+		var didx = $(getobj).next().val();
+		
+		
+		//S- 즐겨찾기 삭제 Ajax
+		
+		$.ajax({
+		type : "POST",
+		url : "/airbeacon/sbMenu/deletefav",
+		dataType : "json",
+		async : false,
+		data : {
+			idx : didx
+		},
+		success : function(data) {
+			
+		},
+		beforeSend : function() {
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			//alert(jqXHR.responseText); //에러 페이지 내용
+			alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+			throw errorThrown;
+		},
+		complete : function() {
+		}
+	});
+		
+		
+		//E- 즐겨찾기 삭제 Ajax
+		
+		
+		
+	}
+	
+}
+</script>
+
+<!-- snb -->
+		<nav class="snb">
+			<nav class="navbar navbar-expand-lg snb_tab mt-4">
+				<div class="collapse navbar-collapse snb_util">
+					<ul class="nav nav-tabs w-100">
+						<li class="nav-item on">
+						<a class="nav-link " href="#snb_menu">전체 메뉴</a>
+						</li>
+						<li class="nav-item">
+						<a class="nav-link" href="#snb_favorite"> 즐겨찾기</a>
+						</li>
+					</ul>
+				</div>
+			</nav>				
+			<div class="snb_list" id="snb_menu">
+				<a class="btn_allmenu w-100 text-right d-block" href="#link"><span class="btn btn-link btn-sm md-small">하위 메뉴 열기</span></a>
+				<ul><!--Ajax로 메뉴들 들어가는 부분  -->
+				</ul>
+			</div>
+
+			<!-- S: 즐겨찾기 -->
+			<div class="snb_list" id="snb_favorite" style="display:none">
+				<ul>
+					<!-- <li class="on"><a href="#link"><span>이벤트 등록</span><span class="favorite on"></span></a></li>
+					<li><a href="#link"><span>이벤트 승인</span><span class="favorite"></span></a></li>
+					<li><a href="#link"><span>쿠폰관리</span><span class="favorite"></span></a></li> -->
+				</ul>
+			</div>
+			<!-- E: 즐겨찾기 -->
+			
+		</nav>
+
+
+<script type="text/javascript">
+// 좌측 트리메뉴 높이 설정
+$(window).on('resize', function(e) {
+	var vheight = parseInt($(this).height());
+	//$('.snb_list').css('height', vheight -131);
+}).resize();
+$(window).trigger('resize');
+
+// 좌측 영역 열고 닫기
+$('.btn_snb_close').click(function () {
+	$(this).hide();
+	$('.btn_snb_open').show();
+	$('.snb').css('margin-left', '-240px');
+	$('#content').css('margin-left', '40px');
+	return false;
+});
+$('.btn_snb_open').click(function () {
+	$(this).hide();
+	$('.btn_snb_close').show();
+	$('.snb').css('margin-left', '0');
+	$('#content').css('margin-left', '280px');
+	return false;
+});
+
+// 좌측메뉴 즐겨찾기 탭 선택 시	
+$('.snb_util li').click(function(e){
+	var activeTab = $(this).find("a").attr("href");
+	$(this).siblings('li').removeClass('on');
+	$(this).addClass('on');
+	$(activeTab).show();
+	$(activeTab).siblings('.snb_list').hide();
+	openfav();
+	resetclickE();
+	return false;
+});
+
+function openfav(){
+	$.ajax({
+		type : "POST",
+		url : "/airbeacon/sbMenu/favoriteMenu",
+		dataType : "json",
+		async : false,
+		data : {
+			callURL : "/airbeacon/sbEvent/addEventForm.do"
+		},
+		success : function(data) {
+			$("#snb_favorite > ul").html("");
+			$("#snb_favorite > ul").html(data.favHtml);
+		},
+		beforeSend : function() {
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			//alert(jqXHR.responseText); //에러 페이지 내용
+			alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+			throw errorThrown;
+		},
+		complete : function() {
+			
+		}
+	});
+}
+
+// 좌측 전체메뉴 펼치고 닫기
+$("#snb_menu .btn_allmenu").click(function(){
+	if ($(this).next("ul").find("ul").is(":visible")){
+		$(this).next("ul").find("ul").slideUp("fast");
+		$(this).next("ul").children("li").children("a").removeClass("open");
+		$(this).removeClass("open");
+		 $(this).children("span").text("메뉴 전체 열기");
+	} else {
+		$(this).next("ul").find("ul").slideDown("fast");
+		$(this).next("ul").children("li").children("a").addClass("open");
+		$(this).addClass("open");
+		$(this).children("span").text("메뉴 전체 닫기");
+	}
+	return false;
+});
+
+// 좌측메뉴 하위뎁스 펼치고 닫기
+$("#snb_menu>ul>li>a").click(function(){
+	$(this).next("ul").slideToggle("fast");
+	$(this).toggleClass("open");
+	$("#snb_menu .btn_allmenu").removeClass("open");
+	$("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 열기");
+	
+	// 레벨 1단계 메뉴 뽑기
+	$( "#snb_menu>ul>li>a" ).each(function( index ) {
+	  //console.log( index + ": " + $( this ).text() + " : class-" + $( this ).hasClass('open') );
+	  if($( this ).hasClass('open')){
+		  $("#snb_menu .btn_allmenu").children("span").text("메뉴 전체 닫기");
+		  return false;
+	  }
+	});
+	return false;
+});
+
+// 좌측메뉴 하위 메뉴 즐겨찾기 토글 
+$(".snb_list li a .favorite").click(function(){
+	$(this).toggleClass("on");
+	return false;
+});
+
+
+
+</script>
+		
+<!-- //snb -->		
+		
+		<!-- content -->
+		<div id="content">
+			<ol class="breadcrumb text-secondary bread_crumbs">
+				<li class="breadcrumb-item"><img src="/airbeacon/commons/coordispace/images/home.png" width="12px" height="12px"/> AirBeacon</li>
+				<li class="breadcrumb-item" aria-current="page">이벤트관리</li>
+				<li class="breadcrumb-item active" aria-current="page">이벤트등록</li>
+			</ol>	
+			<div class="con_top">	
+				<div class="sub_title">
+					<h2>이벤트등록</h2>
+					<span class="info">이벤트의 제반 사항을 등록하는 기능입니다. 이벤트의 콘텐츠는 쿠폰관리에서 입력해야 합니다.</span>
+				</div>
+				<div class="con_top_btn">	
+					<a class="btn_sub" href="javascript:goPage();"><img alt="" src="/airbeacon/commons/coordispace/images/btn/btn14.png" /><span>목록</span></a>
+					<a class="btn_sub" href="javascript:addEvent();"><img alt="" src="/airbeacon/commons/coordispace/images/btn/btn22.png" /><span>저장</span></a>
+				</div>
+			</div>
+			
+			<div class="form">
+			
+				<form id="addForm" name="addForm" action="addEvent.do" method="post">
+					<input type="hidden" name="maxnum" value="" />
+					<input type="hidden" name="page" value="" />
+					<input type="hidden" name="pageZoneList" id="pageZoneList" value="" />
+					<input type="hidden" name="idx" value="" />
+					<input type="hidden" name="isActiveEvent" value="" id="isActiveEvent"/>
+					<input type="hidden" id="weekCd" name="weekCd" value="0" />
+					<input type="hidden" id="stopStartTime" name="stopStartTime" value="" />
+					<input type="hidden" id="stopEndTime" name="stopEndTime" value="" />
+					<input type="hidden" id="repeatTime" name="repeatTime" value="3" />
+			
+			
+				<table class="form_table">
+				<colgroup>
+					<col style="width:100px" />
+					<col />
+				</colgroup>
+				<tr>
+					<th scope="row">이벤트 이름<span class="necessary">*</span></th>
+					<td>
+						<input type="text" name="eventName" id="eventName"  value="" style="width:70%" onkeyup="chkword(this,50)" /><br/>(영문50자/한글25자)
+					</td>
+				</tr>
+				<tr>
+					<th scope="row" rowspan="2">이벤트 기간<span class="necessary">*</span></th>
+					<td>
+						시작일 &nbsp;&nbsp;
+						<input type="text" value="2018-09-12" style="width:190px;margin-right:0px;" id="startDate" name="startDate" readonly />
+						&nbsp;&nbsp;
+						<select style="width:100px" id="startDateHH" name="startDateHH">
+							
+								
+								
+								<option value="00">00시</option>
+						    
+								
+								
+								<option value="01">01시</option>
+						    
+								
+								
+								<option value="02">02시</option>
+						    
+								
+								
+								<option value="03">03시</option>
+						    
+								
+								
+								<option value="04">04시</option>
+						    
+								
+								
+								<option value="05">05시</option>
+						    
+								
+								
+								<option value="06">06시</option>
+						    
+								
+								
+								<option value="07">07시</option>
+						    
+								
+								
+								<option value="08">08시</option>
+						    
+								
+								
+								<option value="09">09시</option>
+						    
+								
+								
+								<option value="10">10시</option>
+						    
+								
+								
+								<option value="11">11시</option>
+						    
+								
+								
+								<option value="12">12시</option>
+						    
+								
+								
+								<option value="13">13시</option>
+						    
+								
+								
+								<option value="14">14시</option>
+						    
+								
+								
+								<option value="15">15시</option>
+						    
+								
+								
+								<option value="16">16시</option>
+						    
+								
+								
+								<option value="17">17시</option>
+						    
+								
+								
+								<option value="18">18시</option>
+						    
+								
+								
+								<option value="19">19시</option>
+						    
+								
+								
+								<option value="20">20시</option>
+						    
+								
+								
+								<option value="21">21시</option>
+						    
+								
+								
+								<option value="22">22시</option>
+						    
+								
+								
+								<option value="23">23시</option>
+						    
+						</select>
+						<select style="width:100px" id="startDateMM" name="startDateMM">
+							
+								
+								
+								<option value="00">00분</option>
+						    
+								
+								
+								<option value="01">01분</option>
+						    
+								
+								
+								<option value="02">02분</option>
+						    
+								
+								
+								<option value="03">03분</option>
+						    
+								
+								
+								<option value="04">04분</option>
+						    
+								
+								
+								<option value="05">05분</option>
+						    
+								
+								
+								<option value="06">06분</option>
+						    
+								
+								
+								<option value="07">07분</option>
+						    
+								
+								
+								<option value="08">08분</option>
+						    
+								
+								
+								<option value="09">09분</option>
+						    
+								
+								
+								<option value="10">10분</option>
+						    
+								
+								
+								<option value="11">11분</option>
+						    
+								
+								
+								<option value="12">12분</option>
+						    
+								
+								
+								<option value="13">13분</option>
+						    
+								
+								
+								<option value="14">14분</option>
+						    
+								
+								
+								<option value="15">15분</option>
+						    
+								
+								
+								<option value="16">16분</option>
+						    
+								
+								
+								<option value="17">17분</option>
+						    
+								
+								
+								<option value="18">18분</option>
+						    
+								
+								
+								<option value="19">19분</option>
+						    
+								
+								
+								<option value="20">20분</option>
+						    
+								
+								
+								<option value="21">21분</option>
+						    
+								
+								
+								<option value="22">22분</option>
+						    
+								
+								
+								<option value="23">23분</option>
+						    
+								
+								
+								<option value="24">24분</option>
+						    
+								
+								
+								<option value="25">25분</option>
+						    
+								
+								
+								<option value="26">26분</option>
+						    
+								
+								
+								<option value="27">27분</option>
+						    
+								
+								
+								<option value="28">28분</option>
+						    
+								
+								
+								<option value="29">29분</option>
+						    
+								
+								
+								<option value="30">30분</option>
+						    
+								
+								
+								<option value="31">31분</option>
+						    
+								
+								
+								<option value="32">32분</option>
+						    
+								
+								
+								<option value="33">33분</option>
+						    
+								
+								
+								<option value="34">34분</option>
+						    
+								
+								
+								<option value="35">35분</option>
+						    
+								
+								
+								<option value="36">36분</option>
+						    
+								
+								
+								<option value="37">37분</option>
+						    
+								
+								
+								<option value="38">38분</option>
+						    
+								
+								
+								<option value="39">39분</option>
+						    
+								
+								
+								<option value="40">40분</option>
+						    
+								
+								
+								<option value="41">41분</option>
+						    
+								
+								
+								<option value="42">42분</option>
+						    
+								
+								
+								<option value="43">43분</option>
+						    
+								
+								
+								<option value="44">44분</option>
+						    
+								
+								
+								<option value="45">45분</option>
+						    
+								
+								
+								<option value="46">46분</option>
+						    
+								
+								
+								<option value="47">47분</option>
+						    
+								
+								
+								<option value="48">48분</option>
+						    
+								
+								
+								<option value="49">49분</option>
+						    
+								
+								
+								<option value="50">50분</option>
+						    
+								
+								
+								<option value="51">51분</option>
+						    
+								
+								
+								<option value="52">52분</option>
+						    
+								
+								
+								<option value="53">53분</option>
+						    
+								
+								
+								<option value="54">54분</option>
+						    
+								
+								
+								<option value="55">55분</option>
+						    
+								
+								
+								<option value="56">56분</option>
+						    
+								
+								
+								<option value="57">57분</option>
+						    
+								
+								
+								<option value="58">58분</option>
+						    
+								
+								
+								<option value="59">59분</option>
+						    
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="freak">
+						종료일 &nbsp;&nbsp;
+						<input type="text" value="2018-10-12" style="width:190px;margin-right:0px;"  id="endDate" name="endDate"  readonly />
+						&nbsp;&nbsp;
+						<select style="width:100px" id="endDateHH" name="endDateHH">
+							
+								
+								
+								<option value="00"  >00시</option>
+						    
+								
+								
+								<option value="01"  >01시</option>
+						    
+								
+								
+								<option value="02"  >02시</option>
+						    
+								
+								
+								<option value="03"  >03시</option>
+						    
+								
+								
+								<option value="04"  >04시</option>
+						    
+								
+								
+								<option value="05"  >05시</option>
+						    
+								
+								
+								<option value="06"  >06시</option>
+						    
+								
+								
+								<option value="07"  >07시</option>
+						    
+								
+								
+								<option value="08"  >08시</option>
+						    
+								
+								
+								<option value="09"  >09시</option>
+						    
+								
+								
+								<option value="10"  >10시</option>
+						    
+								
+								
+								<option value="11"  >11시</option>
+						    
+								
+								
+								<option value="12"  >12시</option>
+						    
+								
+								
+								<option value="13"  >13시</option>
+						    
+								
+								
+								<option value="14"  >14시</option>
+						    
+								
+								
+								<option value="15"  >15시</option>
+						    
+								
+								
+								<option value="16"  >16시</option>
+						    
+								
+								
+								<option value="17"  >17시</option>
+						    
+								
+								
+								<option value="18"  >18시</option>
+						    
+								
+								
+								<option value="19"  >19시</option>
+						    
+								
+								
+								<option value="20"  >20시</option>
+						    
+								
+								
+								<option value="21"  >21시</option>
+						    
+								
+								
+								<option value="22"  >22시</option>
+						    
+								
+								
+								<option value="23" selected >23시</option>
+						    
+						</select>
+						<select style="width:100px" id="endDateMM" name="endDateMM">
+							
+								
+								
+								<option value="00"   >00분</option>
+						    
+								
+								
+								<option value="01"   >01분</option>
+						    
+								
+								
+								<option value="02"   >02분</option>
+						    
+								
+								
+								<option value="03"   >03분</option>
+						    
+								
+								
+								<option value="04"   >04분</option>
+						    
+								
+								
+								<option value="05"   >05분</option>
+						    
+								
+								
+								<option value="06"   >06분</option>
+						    
+								
+								
+								<option value="07"   >07분</option>
+						    
+								
+								
+								<option value="08"   >08분</option>
+						    
+								
+								
+								<option value="09"   >09분</option>
+						    
+								
+								
+								<option value="10"   >10분</option>
+						    
+								
+								
+								<option value="11"   >11분</option>
+						    
+								
+								
+								<option value="12"   >12분</option>
+						    
+								
+								
+								<option value="13"   >13분</option>
+						    
+								
+								
+								<option value="14"   >14분</option>
+						    
+								
+								
+								<option value="15"   >15분</option>
+						    
+								
+								
+								<option value="16"   >16분</option>
+						    
+								
+								
+								<option value="17"   >17분</option>
+						    
+								
+								
+								<option value="18"   >18분</option>
+						    
+								
+								
+								<option value="19"   >19분</option>
+						    
+								
+								
+								<option value="20"   >20분</option>
+						    
+								
+								
+								<option value="21"   >21분</option>
+						    
+								
+								
+								<option value="22"   >22분</option>
+						    
+								
+								
+								<option value="23"   >23분</option>
+						    
+								
+								
+								<option value="24"   >24분</option>
+						    
+								
+								
+								<option value="25"   >25분</option>
+						    
+								
+								
+								<option value="26"   >26분</option>
+						    
+								
+								
+								<option value="27"   >27분</option>
+						    
+								
+								
+								<option value="28"   >28분</option>
+						    
+								
+								
+								<option value="29"   >29분</option>
+						    
+								
+								
+								<option value="30"   >30분</option>
+						    
+								
+								
+								<option value="31"   >31분</option>
+						    
+								
+								
+								<option value="32"   >32분</option>
+						    
+								
+								
+								<option value="33"   >33분</option>
+						    
+								
+								
+								<option value="34"   >34분</option>
+						    
+								
+								
+								<option value="35"   >35분</option>
+						    
+								
+								
+								<option value="36"   >36분</option>
+						    
+								
+								
+								<option value="37"   >37분</option>
+						    
+								
+								
+								<option value="38"   >38분</option>
+						    
+								
+								
+								<option value="39"   >39분</option>
+						    
+								
+								
+								<option value="40"   >40분</option>
+						    
+								
+								
+								<option value="41"   >41분</option>
+						    
+								
+								
+								<option value="42"   >42분</option>
+						    
+								
+								
+								<option value="43"   >43분</option>
+						    
+								
+								
+								<option value="44"   >44분</option>
+						    
+								
+								
+								<option value="45"   >45분</option>
+						    
+								
+								
+								<option value="46"   >46분</option>
+						    
+								
+								
+								<option value="47"   >47분</option>
+						    
+								
+								
+								<option value="48"   >48분</option>
+						    
+								
+								
+								<option value="49"   >49분</option>
+						    
+								
+								
+								<option value="50"   >50분</option>
+						    
+								
+								
+								<option value="51"   >51분</option>
+						    
+								
+								
+								<option value="52"   >52분</option>
+						    
+								
+								
+								<option value="53"   >53분</option>
+						    
+								
+								
+								<option value="54"   >54분</option>
+						    
+								
+								
+								<option value="55"   >55분</option>
+						    
+								
+								
+								<option value="56"   >56분</option>
+						    
+								
+								
+								<option value="57"   >57분</option>
+						    
+								
+								
+								<option value="58"   >58분</option>
+						    
+								
+								
+								<option value="59" selected  >59분</option>
+						    
+						</select>
+					</td>
+				</tr>
+				
+				<tr>
+					<th scope="row">공간설정<span class="necessary">*</span></th>
+					<td>
+						<div class="con_top_btn mb10">
+							<a id="buttonZoneSetting" class="btn_system ml0 btn_pop_zone" href="#link"><img alt="" src="/airbeacon/commons/coordispace/images/btn/btn4.png" /><span>선택</span></a> 
+						</div>
+						
+						<div class="div_textarea" id="divTextareaZoneIdList">
+							<!--  <span>A가맹점 A대리점 <button type="button">X</button></span>--> 
+						</div>
+						
+						
+					</td>
+				</tr>
+				
+				<tr>
+					<th scope="row">쿠폰 선택<span class="necessary">*</span></th>
+					<td>
+						<select style="width:400px" name="couponId" id="couponId">
+							<option value="">---------------------------------------------선택---------------------------------------------</option>
+									
+									
+									
+									
+									
+									<option value="328">20180907 현대회사1 쿠폰 ( 2018-09-07 ~ 2018-10-07 )</option>
+										
+									
+									
+									
+									
+									<option value="286">111 ( 2018-08-24 ~ 2018-09-24 )</option>
+										
+									
+									
+									
+									
+									<option value="269">현대대리점1 쿠폰 ( 2018-08-21 ~ 2018-09-21 )</option>
+															
+						</select> 고객에게 전달될 쿠폰을 선택하여 주십시오.
+					</td>
+				</tr>
+				
+				<tr>
+					<th scope="row">이벤트 형태<span class="necessary">*</span></th>
+					<td>
+						<input type="radio" id="eventGubunC" name="eventGubun"  value="C" checked="checked" /> <label for="coupon_type1">쿠폰발송</label>
+						<input type="radio" id="eventGubunG" name="eventGubun"  value="G" /> <label for="coupon_type2">게릴라 이벤트(최우선발송)</label>
+					</td>
+				</tr>
+				
+				<tr>
+					<th scope="row">시간설정</th>
+					<td>
+						<div class="con_top_btn">	
+							<a class="btn_system ml0 btn_pop_time btn_pop_member_modify" href="#link"><img alt="" src="/airbeacon/commons/coordispace/images/btn/btn2.png" /><span>수정</span></a> <font id="textTimeSetting">매일 반복, <!-- 재수신 간격 3시간,--> 비활성화 시간 없음</font>
+						</div> 
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">부가정보</th>
+					<td>
+						<textarea rows="10" cols="50" style="width:97%" name="optionalInfo" id="optionalInfo" onkeyup="chkword(this,200)"></textarea>
+						 <br/>(영문200자/한글100자)
+					</td>
+				</tr>
+				</table>
+
+
+
+				
+				</form>
+			</div>		
+
+			
+		</div>
+
+		<!-- //content -->
+		
+	</div>
+	<!-- //container -->
+	
+	
+
+
+<!-- footer -->
+<footer id="footer" class="text-right small  m-4 text-secondary">
+	<p class="m-0">
+		<span class="footer_info m-1">최근 접속 정보</span><span class="p-1 text-primary">09-12 11:00:12</span><span class="text-primary p-1">IP.0:0:0:0:0:0:0:1</span>
+		<!-- <span class="p-1">© CoordiSpace</span> -->
+	</p>
+</footer>
+<script type="text/javascript">
+function footerbottom(){
+	 var bodyhh131 = $('body').height();
+	 var conhh131 = $('#content').height();
+	 var minnuss1 = bodyhh131-conhh131;
+	 // minuss1이 음수 이면 긴컨텐츠 
+	 // console.log("body"+bodyhh131);
+	 //console.log("content"+conhh131);
+	 //console.log("minus"+minnuss1);
+	 if(minnuss1>80){
+		//alert('1')
+		//$('#content').css('height',bodyhh131);
+		$('#footer').css('position','fixed').css('left','0').css('bottom','0');
+	 } else{
+		//alert('2')
+		$('#content').css('height','auto');
+		$('#footer').css('position','relative').css('left','0').css('bottom','0');
+	 }
+	}
+
+
+</script>
+<!-- //footer -->
+
+</div>
+<!-- //wrap -->	
+
+
+
+<!-- popup 공간설정(Beacon 추가) -->
+<div class="popup popup_zone">
+	<div class="popup_in">
+		
+		<div class="pop_top">	
+			<div class="sub_title">
+				<h1>공간설정</h1>
+			</div>
+			<div class="pop_top_btn">	
+				<a class="btn_sub" id="setZoneIdListButton" href="javascript:"><span>등록</span></a>
+				<a class="btn_sub btn_popclose" href="#link"><span>닫기</span></a>
+			</div>
+		</div>
+
+		<table class="form_table">
+		<colgroup>
+			<col style="width:100px" />
+			<col />
+		</colgroup>
+		<tr>
+			<th scope="row">참여사 정보</th>
+			<td>
+			
+				<select style="width:158px" id="enterpriseIdx" name="searchEnterpriseCdIdx" >
+							<option value="">사업</option>
+				</select>
+			
+				<select  style="width:158px"  id="companyIdx" name="searchCompanyCdIdx" id="companyIdx">
+						<option value="">참여사</option>
+						
+				</select>
+
+				<select  style="width:158px"  id="brandIdx" name="searchBrandCdIdx" id="brandIdx">
+						<option value="">가맹점</option>
+						 
+				</select>
+				
+				<select  style="width:158px"  id="branchIdx" name="searchBranchCdIdx" id="branchIdx">
+						<option value="">대리점</option>
+						
+				</select>
+								
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">구분</th>
+			<td>
+				<select  style="width:158px" id="type" name="type">
+						<option value="">전체</option>
+						<option  value="V">가상비콘</option>
+						<option  value="B">물리비콘</option>
+						<option  value="G">지오펜싱</option>
+				</select>				
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">Beacon 이름</th>
+			<td>
+				<input type="text" name="searchKeyword" id="searchKeyword" value="" style="width:395px">
+				<a class="btn_system" id="getJsonZoneListButton" ><img alt="" src="/airbeacon/commons/coordispace/images/btn/btn1.png" /><span>검색</span></a>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">검색결과</th>
+			<td>
+				<div class="list_scroll" style="height:275px">		
+					
+					
+					<table class="list_table" id="list_table_zone">
+						<colgroup>
+							<col style="width:40px" />
+							<col style="width:50px" />
+							<col />
+							<col style="width:90px" />
+							<col style="width:90px" />
+							<col style="width:90px" />
+						</colgroup>
+						<thead>
+						<tr>
+							<th scope="col"><input type="checkbox" id="allcheck" name="check"></th>
+							<th scope="col">no.</th>
+							<th scope="col">Beacon 이름</th>
+							<th scope="col">상태</th>
+							<th scope="col">구분</th>
+							<th scope="col">등록일</th>
+						</tr>
+						</thead>
+						<tbody id="tbodyZoneList">
+							<tr>
+								<td colspan="6" class="center">등록된 데이타가 없습니다.</td>
+							</tr>							
+						</tbody>
+					</table>
+					
+					<p class="paginate" id="zonePaginate"></p>
+					
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">점유 이벤트</th>
+			<td>
+				<div class="list_scroll" style="height:185px">	
+					<table class="list_table">
+					<colgroup>
+						<col style="width:40px" />
+						<col />
+						<col style="width:90px" />
+						<col style="width:170px" />
+						<col style="width:70px" />
+					</colgroup>
+					<thead>
+					<tr>
+						<th scope="col">no.</th>
+						<th scope="col">이벤트 이름</th>
+						<th scope="col">상태</th>
+						<th scope="col">기간</th>
+						<th scope="col">가맹점</th>
+					</tr>
+					</thead>
+					<tbody id="tbodyOccupyEventList">
+						<tr><td colspan="5" class="center">등록된 데이타가 없습니다.</td></tr>
+					</tbody>
+					</table>
+				</div>
+			</td>
+		</tr>
+		</table>
+
+	</div>
+</div>
+<!-- //popup 공간설정(Beacon 추가) -->
+
+<!-- popup 시간설정 -->
+<div class="popup popup_time" >
+	<div class="popup_in">
+		
+		<div class="pop_top">	
+			<div class="sub_title">
+				<h1>시간설정</h1>
+			</div>
+			<div class="pop_top_btn">	
+				<a class="btn_sub" href="javascript:regTimeSetting();"><span>등록</span></a>
+				<a class="btn_sub btn_popclose" href="#link"><span>닫기</span></a>
+			</div>
+		</div>
+
+		<table class="form_table">
+		<colgroup>
+			<col style="width:100px" />
+			<col />
+		</colgroup>
+		<tr>
+			<th scope="row">요일제어</th>
+			<td>
+				<select style="width:158px" id="tempWeekCd" name="tempWeekCd">
+					<option value="0">매일반복</option>
+					<option value="1">일요일</option>
+					<option value="2">월요일</option>
+					<option value="3">화요일</option>
+					<option value="4">수요일</option>
+					<option value="5">목요일</option>
+					<option value="6">금요일</option>
+					<option value="7">토요일</option>
+					<option value="8">평일(월화수목금)</option>
+					<option value="9">주말(토일)</option>
+					<option value="10">일요일제외(월화수목금토)</option>
+				</select>				
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">비활성화 시간</th>
+			<td>
+				<div class="time_from">
+					<select style="width:158px" id="tempStopStartTimeHH" name="tempStopStartTimeHH">
+						<option value="">시간 선택</option>
+						
+							
+							
+							<option value="00">00시</option>
+					    
+							
+							
+							<option value="01">01시</option>
+					    
+							
+							
+							<option value="02">02시</option>
+					    
+							
+							
+							<option value="03">03시</option>
+					    
+							
+							
+							<option value="04">04시</option>
+					    
+							
+							
+							<option value="05">05시</option>
+					    
+							
+							
+							<option value="06">06시</option>
+					    
+							
+							
+							<option value="07">07시</option>
+					    
+							
+							
+							<option value="08">08시</option>
+					    
+							
+							
+							<option value="09">09시</option>
+					    
+							
+							
+							<option value="10">10시</option>
+					    
+							
+							
+							<option value="11">11시</option>
+					    
+							
+							
+							<option value="12">12시</option>
+					    
+							
+							
+							<option value="13">13시</option>
+					    
+							
+							
+							<option value="14">14시</option>
+					    
+							
+							
+							<option value="15">15시</option>
+					    
+							
+							
+							<option value="16">16시</option>
+					    
+							
+							
+							<option value="17">17시</option>
+					    
+							
+							
+							<option value="18">18시</option>
+					    
+							
+							
+							<option value="19">19시</option>
+					    
+							
+							
+							<option value="20">20시</option>
+					    
+							
+							
+							<option value="21">21시</option>
+					    
+							
+							
+							<option value="22">22시</option>
+					    
+							
+							
+							<option value="23">23시</option>
+					    
+					</select>
+					<select style="width:158px" id="tempStopStartTimeMM" name="tempStopStartTimeMM">
+						<option value="">분 선택</option>
+						<option value="00">00분</option>
+						<option value="10">10분</option>
+						<option value="20">20분</option>
+						<option value="30">30분</option>
+						<option value="40">40분</option>
+						<option value="50">50분</option>
+					</select>	
+					<span>부터</span>
+				</div>
+				<div class="time_to">
+					<span class="swung_dash">~</span>
+					<select style="width:158px" id="tempStopEndTimeHH" name="tempStopEndTimeHH">
+						<option value="">시간 선택</option>
+						<
+							
+							
+							<option value="00">00시</option>
+					    
+							
+							
+							<option value="01">01시</option>
+					    
+							
+							
+							<option value="02">02시</option>
+					    
+							
+							
+							<option value="03">03시</option>
+					    
+							
+							
+							<option value="04">04시</option>
+					    
+							
+							
+							<option value="05">05시</option>
+					    
+							
+							
+							<option value="06">06시</option>
+					    
+							
+							
+							<option value="07">07시</option>
+					    
+							
+							
+							<option value="08">08시</option>
+					    
+							
+							
+							<option value="09">09시</option>
+					    
+							
+							
+							<option value="10">10시</option>
+					    
+							
+							
+							<option value="11">11시</option>
+					    
+							
+							
+							<option value="12">12시</option>
+					    
+							
+							
+							<option value="13">13시</option>
+					    
+							
+							
+							<option value="14">14시</option>
+					    
+							
+							
+							<option value="15">15시</option>
+					    
+							
+							
+							<option value="16">16시</option>
+					    
+							
+							
+							<option value="17">17시</option>
+					    
+							
+							
+							<option value="18">18시</option>
+					    
+							
+							
+							<option value="19">19시</option>
+					    
+							
+							
+							<option value="20">20시</option>
+					    
+							
+							
+							<option value="21">21시</option>
+					    
+							
+							
+							<option value="22">22시</option>
+					    
+							
+							
+							<option value="23">23시</option>
+					    
+					</select>
+					<select style="width:158px" id="tempStopEndTimeMM" name="tempStopEndTimeMM">
+						<option value="">분 선택</option>
+						<option value="00">00분</option>
+						<option value="10">10분</option>
+						<option value="20">20분</option>
+						<option value="30">30분</option>
+						<option value="40">40분</option>
+						<option value="50">50분</option>
+					</select>	
+					<span>까지</span>
+				</div>
+			</td>
+		</tr>
+		
+		<!-- S : 기획 제외 -->
+		<!-- 
+		<tr>
+			<th scope="row">재수신 간격</th>
+			<td>
+				<select style="width:158px" id="tempRepeatTime"  name="tempRepeatTime">
+					
+						
+						
+						<option value="1"  >1시간</option>
+				    
+						
+						
+						<option value="2"  >2시간</option>
+				    
+						
+						
+						<option value="3" selected >3시간</option>
+				    
+						
+						
+						<option value="4"  >4시간</option>
+				    
+						
+						
+						<option value="5"  >5시간</option>
+				    
+						
+						
+						<option value="6"  >6시간</option>
+				    
+						
+						
+						<option value="7"  >7시간</option>
+				    
+						
+						
+						<option value="8"  >8시간</option>
+				    
+						
+						
+						<option value="9"  >9시간</option>
+				    
+						
+						
+						<option value="10"  >10시간</option>
+				    
+						
+						
+						<option value="11"  >11시간</option>
+				    
+						
+						
+						<option value="12"  >12시간</option>
+				    
+						
+						
+						<option value="13"  >13시간</option>
+				    
+						
+						
+						<option value="14"  >14시간</option>
+				    
+						
+						
+						<option value="15"  >15시간</option>
+				    
+						
+						
+						<option value="16"  >16시간</option>
+				    
+						
+						
+						<option value="17"  >17시간</option>
+				    
+						
+						
+						<option value="18"  >18시간</option>
+				    
+						
+						
+						<option value="19"  >19시간</option>
+				    
+						
+						
+						<option value="20"  >20시간</option>
+				    
+						
+						
+						<option value="21"  >21시간</option>
+				    
+						
+						
+						<option value="22"  >22시간</option>
+				    
+						
+						
+						<option value="23"  >23시간</option>
+				    
+						
+						
+						<option value="24"  >24시간</option>
+				    
+				</select>
+				<span class="form_info">고객이 Beacon에 다시 진입했을 때 <em>메시지를 중복해서 수신하는 시간</em>입니다. </span>				
+			</td>
+		</tr>
+		 -->
+		<!-- E : 기획 제외 -->
+		
+		</table>
+
+	</div>
+</div>
+<!-- //popup 시간설정 -->
+
+
+<!-- popup 이벤트승인 등록 -->
+<div class="popup popup_member_modify popup_member_modify4"> 
+	<div class="popup_in">
+		<p>이벤트를 등록하시겠습니까?</p>
+		<a class="btn_system btn_confirm" href="#link" onclick="addEventConfirm()"><span >확인</span></a> 
+		<a class="btn_system btn_popclose" href="#link"><span>취소</span></a>
+	</div>
+</div>
+<!-- //popup 이벤트승인 등록 -->
+
+
+
+<!-- popup dim 영역 -->
+<div class="popup_dim"></div>
+<!-- //popup dim 영역 -->
+
+
+
+<!-- S : bizLogic -->
+<script type="text/javascript">
+var COORDISPACE = new Object();
+COORDISPACE.SWBeacon = new Object();
+COORDISPACE.SWBeacon.EventService = function(){
+	
+	var _self = this;
+	
+	function init(){}
+	
+	//allcheck toggle
+	this.toggleAllCheck = function(v){
+		if($('input:checkbox[id="allcheck"]').is(":checked")){
+			$("input[name=searchZoneId]:checkbox").each(function() {
+				$(this).prop("checked", true);
+			});
+		} else{
+			$("input[name=searchZoneId]:checkbox").each(function() {
+				$(this).prop("checked", false);
+			});
+		}
+	};
+	
+	// ajaxCall - 쿠폰선택 > 쿠폰목록
+	this.getJsonCouponList = function(v){
+		
+		if($("#startDate").val()>$("#endDate").val()){
+			alert("종료일이 시작일 이전입니다.");			
+			var yy = parseInt($("#endDate").val().substr(0, 4), 10);
+		    var mm = parseInt($("#endDate").val().substr(5, 2), 10);
+		    var dd = parseInt($("#endDate").val().substr(8), 10);		 
+		    var d = new Date(yy, mm - 2, dd );
+		    yy = d.getFullYear();
+		    mm = d.getMonth() + 1; mm = (mm < 10) ? '0' + mm : mm;
+		    dd = d.getDate(); dd = (dd < 10) ? '0' + dd : dd;
+		    $("#startDate").val(yy + '-' + mm +'-' + dd) ;
+		    //return;
+		}
+		
+		$.ajax({
+			type: "POST",
+			url: "/airbeacon/sbEvent/getJsonCouponList.do", 
+			dataType: "json",
+			async: false,
+			data: {		
+				searchEnterpriseCdIdx: $("#enterpriseIdx").val() ,
+				searchCompanyCdIdx : $("#companyIdx").val() ,
+				searchBrandCdIdx : $("#brandIdx").val() ,
+				searchBranchCdIdx : $("#branchIdx").val() ,
+				searchStartDate : $("#startDate").val() ,
+				searchEndDate : $("#endDate").val()
+			},
+			success: function(data){			
+				
+				if( data !== null ){
+					var list = data.couponList;
+					var totalCount = list.length ;
+					var _tmp_html = '' ;
+					
+					if(list.length>0){
+						_tmp_html += '<option value="">---------------------------------------------선택---------------------------------------------</option>' ;
+						$.each(list, function(i){		
+							_tmp_html += '<option value="' + this.idx +  '">' + this.couponName + ' ( ' + this.startDate.substring(0,10) + ' ~ ' + this.endDate.substring(0,10) + ' )' + '</option>' ;
+						});
+					}else{
+						_tmp_html += '<option value="">--------------------------------------데이터없음---------------------------------------</option>' ;
+					}
+					$("#couponId").html(_tmp_html);					
+				}
+			},
+			beforeSend: function(){
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				//alert(jqXHR.responseText); //에러 페이지 내용
+				//alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+				throw errorThrown;
+			},
+			complete: function(){
+				
+			}
+		});
+		
+	};
+	
+	
+	// ajaxCall - 공간설정 > 존 목록 
+	this.getJsonZoneList = function (v){
+		
+		if(v) $("#pageZoneList").val(v) ;
+		else $("#pageZoneList").val(1) ;
+		
+		$("#tbodyZoneList").hide();
+		$("#zonePaginate").hide();
+		
+		if($("#startDate").val()>$("#endDate").val()){
+			alert("종료일이 시작일 이전입니다.");			
+			var yy = parseInt($("#endDate").val().substr(0, 4), 10);
+		    var mm = parseInt($("#endDate").val().substr(5, 2), 10);
+		    var dd = parseInt($("#endDate").val().substr(8), 10);		 
+		    var d = new Date(yy, mm - 2, dd );
+		    yy = d.getFullYear();
+		    mm = d.getMonth() + 1; mm = (mm < 10) ? '0' + mm : mm;
+		    dd = d.getDate(); dd = (dd < 10) ? '0' + dd : dd;
+		    $("#startDate").val(yy + '-' + mm +'-' + dd) ;
+		    //return;
+		}
+		
+		
+		var _tmp_searchStartDate = "" ;
+		var _tmp_searchEndDate  = "" ;
+		
+		if($(':radio[name="eventGubun"]:checked').val()=='C'){
+			_tmp_searchStartDate = $("#startDate").val() ;
+			_tmp_searchEndDate = $("#endDate").val() ;
+		}
+		
+		
+		$.ajax({
+			type: "POST",
+			url: "/airbeacon/sbEvent/getJsonZoneList.do",
+			dataType: "json",
+			async: false,
+			data: {
+				searchEnterpriseCdIdx: $("#enterpriseIdx").val() ,
+				searchCompanyCdIdx : $("#companyIdx").val() ,
+				searchBrandCdIdx : $("#brandIdx").val() ,
+				searchBranchCdIdx : $("#branchIdx").val() ,
+				searchKeyword : $("#searchKeyword").val() ,
+				maxnum : 15,
+				page : $("#pageZoneList").val() ,
+				searchStartDate : _tmp_searchStartDate ,
+				searchEndDate : _tmp_searchEndDate,
+				type : $("#type").val() 
+			},
+			success: function(data){			
+				
+				if( data !== null ){
+					var list = data.beaconList;
+					var totalCount = data.beaconListTotalCnt;
+					var maxnum = data.maxnum;
+					var page = data.page;
+					var _tmp_html = '' ;
+					var _tmp_paging = '' ;
+					
+					$.each(list, function(i){		
+						var _tmp_class_state_event = "state_event";
+						var _tmp_text_state_event = "";
+						var _tmp_text_countOccupyEventList = "없음";
+						var _tmp_text_type = "";
+						
+						// 비콘 상태 설정
+						if( this.isDel==1 ){
+							_tmp_class_state_event += " delete"; 
+							_tmp_text_state_event += "삭제";						
+						}else if( this.lati != null && this.apid != null ){
+							_tmp_class_state_event += " normal"; 
+							_tmp_text_state_event += "정상";
+						}else if( this.lati == null && this.apid==null ){
+							_tmp_class_state_event += " standby"; 
+							_tmp_text_state_event += " 대기";
+						}else if( this.lati == null && this.apid != null ){
+							_tmp_class_state_event += " before"; 
+							_tmp_text_state_event += " 등록전";
+						}
+						
+						/* console.log("type:"+this.type); */
+						if(this.type == 'G') {
+							_tmp_text_type += "지오펜싱";
+						} else if (this.type == 'V') {
+							_tmp_text_type += "가상비콘";
+						}
+						
+						// 점유이벤트 수 설정
+						if(this.countOccupyEventList>0){
+							_tmp_text_countOccupyEventList = this.countOccupyEventList.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") ;
+						}
+						
+						_tmp_html += '<tr>' ;
+						_tmp_html += '	<td class="center"><input type="checkbox" id="checkbox_zone_id_' + this.beaconNo + '" name="searchZoneId" value="' + this.beaconNo + '" beaconName="' + this.beaconName + '" companyCdIdx="' + this.companyCdIdx + '" brandCdIdx="' + this.brandCdIdx + '" branchCdIdx="' + this.branchCdIdx+ '" /></td>' ;
+						_tmp_html += '	<td class="center">' + (totalCount - i - (maxnum*(page-1)) ) +  '</td>' ;
+						_tmp_html += '	<td><a href="javascript:_service.getJsonOccupyEventList(' + this.beaconNo + ')">' + this.beaconName + '</a></td>' ;
+						_tmp_html += '	<td class="center">' ;					
+						_tmp_html += '		<span class="'  + _tmp_class_state_event + '">' + _tmp_text_state_event + '</span>' ;					
+						_tmp_html += '	</td>' ;
+						//_tmp_html += '	<td class="center">' + _tmp_text_countOccupyEventList + '</td>' ;
+						_tmp_html += '	<td class="center">' + _tmp_text_type + '</td>' ;
+						_tmp_html += '	<td class="center">' + this.createtime.substring(0,10) + '</td>' ;
+						_tmp_html += '</tr>' ;
+						
+					});		
+					
+					/***********************************************************************************************************
+					* S : paging
+					************************************************************************************************************/				
+					// set default value
+					var _paging_totalNum = parseInt(totalCount) ; 
+					var _paging_pageListCnt = parseInt(maxnum) ;
+					var _paging_pageGrpCnt = 15 ;
+					var _paging_pageIdx = parseInt(page);
+					
+					// set paging value
+					var _paging_totalPageCnt	= parseInt((_paging_totalNum/_paging_pageListCnt)+( _paging_totalNum % _paging_pageListCnt == 0 ? 0:1) );
+					var _paging_startPage		= parseInt(((_paging_pageIdx-1)/_paging_pageGrpCnt)  );
+					var _paging_endPage 		= parseInt( _paging_startPage*_paging_pageGrpCnt+1) ;
+					
+					if(_paging_startPage + _paging_pageGrpCnt > _paging_totalPageCnt)  _paging_endPage = _paging_totalPageCnt;
+					else _paging_endPage = _paging_startPage + _paging_pageGrpCnt -1 ;
+					
+					if(false && _paging_startPage != 1) _tmp_paging += ' <a class="first" href="javascript:getJsonZoneList(1);"><span>first</span></a> ' ;												// first page			
+					if(_paging_startPage -1 > 0 )	_tmp_paging += ' <a class="prev" href="javascript:getJsonZoneList(' + (_paging_startPage-1) + ');"><span>Prev</span></a> ' ;				// prev page
+					for(var i=_paging_startPage, j=_paging_endPage; i<j; i++ ){		// paging
+						if( (i+1)==_paging_pageIdx )
+							_tmp_paging += '<strong>' + (i+1) +  '</strong>' ;
+						else
+							_tmp_paging += '<a href="javascript:_service.getJsonZoneList(' + (i+1) + ');">' + (i+1) + '</a>';
+					}
+					if(_paging_endPage +1 <= _paging_totalPageCnt)	_tmp_paging += ' <a class="next" href="javascript:getJsonZoneList' + (_paging_endPage+1) +  ');"><span>Next</span></a>  ' ;			// next page
+					if(false && _paging_endPage != _paging_totalPageCnt )		_tmp_paging += '<a class="last" href="javascript:getJsonZoneList(' + _paging_totalPageCnt  + ');"><span>last</span></a> ' ;	// last page				
+					
+					// display List & page navigation
+					if(totalCount){
+						$("#tbodyZoneList").html(_tmp_html);
+						$("#zonePaginate").html(_tmp_paging);
+					}else{
+						$("#tbodyZoneList").html('<tr><td colspan="6" class="center">등록된 데이타가 없습니다.</td></tr>');
+						$("#zonePaginate").html('');
+					}
+					
+				}
+			},
+			beforeSend: function(){
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				//alert(jqXHR.responseText); //에러 페이지 내용
+				//alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+				throw errorThrown;
+			},
+			complete: function(){
+				$("#tbodyZoneList").animate({scrollTop: $('#tbodyZoneList').offset().top}, 100);
+				$("#tbodyZoneList").fadeIn( '1000', function() {});
+				$("#zonePaginate").fadeIn( '1000', function() {});
+			}
+		});
+	};
+	
+	//ajaxCall - 공간설정 > 점유이벤트 목록 
+	this.getJsonOccupyEventList = function (v){
+		$("#tbodyOccupyEventList").hide();
+		$.ajax({
+			type: "POST",
+			url: "/airbeacon/sbEvent/getJsonOccupyEventList.do",
+			dataType: "json",
+			async: false,
+			data: {		
+				idx : v
+			},
+			success: function(data){			
+				
+				if( data !== null ){
+					var list = data.occupyEventList;
+					var totalCount = list.length ;
+					var _tmp_html = '' ;
+					var _tmp_paging = '' ;
+					
+					$.each(list, function(i){		
+						var _tmp_class_state_event = "state_event";
+						var _tmp_text_state_event = "";
+						var _tmp_text_countOccupyEventList = "없음";
+						
+						// 존 상태 설정
+						if( this.isDel==1 ){
+							_tmp_class_state_event += " delete"; 
+							_tmp_text_state_event += "삭제";						
+						}else if( this.lati != null && this.apid != null ){
+							_tmp_class_state_event += " normal"; 
+							_tmp_text_state_event += "정상";
+						}else if( this.lati == null && this.apid==null ){
+							_tmp_class_state_event += " standby"; 
+							_tmp_text_state_event += " 대기";
+						}else if( this.lati == null && this.apid != null ){
+							_tmp_class_state_event += " before"; 
+							_tmp_text_state_event += " 등록전";
+						}
+						
+						_tmp_html += '<tr>' ;
+						_tmp_html += '	<td class="center">' + (totalCount-i) +  '</td>' ;
+						_tmp_html += '	<td>' + this.eventName + '</td>' ;
+						_tmp_html += '	<td class="center">' ;
+						_tmp_html += '		<span class="'  + _tmp_class_state_event + '">' + _tmp_text_state_event + '</span>' ;
+						//_tmp_html += '		<span class="state_event before">등록전</span>' ;
+						_tmp_html += '	</td>' ;
+						_tmp_html += '	<td class="center">' + this.startDate.substring(0,10) + ' ~ ' + this.endDate.substring(0,10) + '</td>' ;
+						_tmp_html += '	<td class="center">' + this.brandName + '</td>' ;
+						_tmp_html += '</tr>' ;
+						
+					});	
+					
+					if(totalCount){
+						// display List & page navigation
+						$("#tbodyOccupyEventList").html(_tmp_html);
+					}else{
+						$("#tbodyOccupyEventList").html('<tr><td colspan="5" class="center">등록된 데이타가 없습니다.</td></tr>');
+					}
+				}
+			},
+			beforeSend: function(){
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				//alert(jqXHR.responseText); //에러 페이지 내용
+				//alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+				throw errorThrown;
+			},
+			complete: function(){
+				$("#tbodyOccupyEventList").animate({scrollTop: $('#tbodyOccupyEventList').offset().top}, 100);
+				$("#tbodyOccupyEventList").fadeIn( '500', function() {});
+			}
+		});
+	};
+	
+	// set zoneId
+	this.setZoneIdList = function(v){
+		var _tmp_zoneIdListHtml = "" ;
+		var _is_checked = false; 
+		
+		// 공간설정(존) 레이어 Id 값 체크
+		$("input[name=searchZoneId]:checkbox").each(function() {
+			if($(this).prop("checked")){
+				_is_checked = true ;
+				return false;
+			}
+		});
+		
+		// 셋팅된 Id값 체크
+		/*
+		$("input[name=zoneId]:hidden").each(function() {
+			alert($(this).val());			
+		});
+		*/
+		
+		if(_is_checked){
+			//$("#divTextareaZoneIdList").html("");
+			
+			// 참여사 체크 : 기존 등록된 참여사 체크
+			var _isInvalidDuplicationCompapnyCdIdx = false;
+			$("input[name=zoneId]").each(function(index, element) {
+				if(_isInvalidDuplicationCompapnyCdIdx) return false;
+				$("input[name=searchZoneId]:checkbox:checked").each(function(_d_index, _d_element) {	
+					//console.log("체크박스:" + $(_d_element).attr("companyCdIdx") + " / " + "기존설정:" + $(element).attr("companyCdIdx") );
+					if( $(_d_element).attr("companyCdIdx") != $(element).attr("companyCdIdx") ){
+						_isInvalidDuplicationCompapnyCdIdx = true ;
+						//console.log("다른 참여사" + _isInvalidDuplicationCompapnyCdIdx);
+					}
+				});	
+			});	
+			
+			// 참여사 체크 : 체크박스 동일한 참여사 인지 체크
+			var _main_companyCdIdx = "";
+			$("input[name=searchZoneId]:checkbox:checked").each(function(_d_index, _d_element) {	
+				if(_d_index==0) {
+					_main_companyCdIdx = $(_d_element).attr("companyCdIdx") ;
+					//console.log("대표 회사번호 : " + _main_companyCdIdx);
+				}
+				if( _main_companyCdIdx!=$(_d_element).attr("companyCdIdx") ){
+					//console.log("회사번호 다름 ");
+					_isInvalidDuplicationCompapnyCdIdx = true ;
+				}
+			});
+			
+			if(_isInvalidDuplicationCompapnyCdIdx){
+				alert("동일한 참여사만 선택/등록해주세요.");
+				return;
+			}
+			
+			$('#divTextareaZoneIdList').hide();
+			$("input[name=searchZoneId]:checkbox:checked").each(function(index) {				
+				// 존 없을경우만 추가
+				if( $("#zoneId_"+$(this).val() ).length>0 ){
+					
+				}else{					
+					_tmp_zoneIdListHtml += '<span id="zoneId_' + $(this).val() +  '">' + $(this).attr("beaconName") ;
+					_tmp_zoneIdListHtml += '	<button style="color : black"type="button"  onclick="_service.removeZoneId(' + $(this).val() +  ')">등록취소</button>' ;
+					_tmp_zoneIdListHtml += '	<input type="hidden" name="zoneId" value="' + $(this).val() + '" companyCdIdx="' + $(this).attr("companyCdIdx") + '"  />' ;
+					_tmp_zoneIdListHtml += '</span>' ;
+					
+					if(index==0){
+						if( $("#checkbox_zone_id_" + $(this).val()).attr("companyCdIdx") ){
+							$("#companyIdx").val($("#checkbox_zone_id_" + $(this).val()).attr("companyCdIdx"));
+							settingBrandList($("#companyIdx").val());
+						}
+						if( $("#checkbox_zone_id_" + $(this).val()).attr("brandCdIdx") ){
+							$("#brandIdx").val($("#checkbox_zone_id_" + $(this).val()).attr("brandCdIdx"));
+							settingBranchList($("#brandIdx").val());	
+						}
+						if( $("#checkbox_zone_id_" + $(this).val()).attr("branchCdIdx") ){
+							$("#branchIdx").val($("#checkbox_zone_id_" + $(this).val()).attr("branchCdIdx"));
+						}
+					}
+					
+				}
+			});			
+			
+			alert( "총 " + $("input[name=searchZoneId]:checkbox:checked").length + "" + " 개의  비콘이 선택되었습니다.");
+			
+			
+			_self.getJsonCouponList();
+			
+			
+			$('.popup').fadeOut();
+			$(".popup_dim").fadeOut();	
+			//$("#divTextareaZoneIdList").html(_tmp_zoneIdListHtml);
+			$("#divTextareaZoneIdList").append(_tmp_zoneIdListHtml);
+			$('#divTextareaZoneIdList').fadeIn();
+		}else{
+			alert("선택된 Zone이 없습니다");
+		}
+	};
+	
+	// remove zoneId
+	this.removeZoneId = function(v){
+		$("#zoneId_"+v).fadeOut();
+		$("#zoneId_"+v).remove();
+	};
+	
+	
+	this.initEventGubun = function(v){
+		if($(':radio[name="eventGubun"]:checked').val()=='C'){
+			alert("이벤트 형태를 수정하시면 공간설정은 초기화 되어 다시 설정 하셔야 합니다.");
+			$("#divTextareaZoneIdList").html("");
+		}
+	};
+	
+	this.initStartDate = function(v){
+		alert("이벤트 기간을 수정하시면 공간설정은 초기화 되어 다시 설정 하셔야 합니다.");
+		$("#divTextareaZoneIdList").html("");	
+		_self.getJsonCouponList();
+		
+	};
+	
+	this.initEndDate = function(v){
+		alert("이벤트 기간을 수정하시면 공간설정은 초기화 되어 다시 설정 하셔야 합니다.");
+		$("#divTextareaZoneIdList").html("");
+		_self.getJsonCouponList();
+	};
+	
+	
+	init();	
+}
+
+
+var _service;
+
+$(document).ready(function(){
+	//try{				
+		_service = new COORDISPACE.SWBeacon.EventService();		
+		
+		$("#allcheck").bind('click', _service.toggleAllCheck);
+		$("#getJsonZoneListButton").bind('click', _service.getJsonZoneList);
+		$("#setZoneIdListButton").bind('click', _service.setZoneIdList);
+		$("#buttonZoneSetting").bind('click', _service.getJsonZoneList);
+		
+		$("#startDate").bind('change', _service.initStartDate);
+		$("#startDateHH").bind('change', _service.initStartDate);
+		$("#startDateMM").bind('change', _service.initStartDate);
+		
+		$("#endDate").bind('change', _service.initEndDate);
+		$("#endDateHH").bind('change', _service.initEndDate);
+		$("#endDateMM").bind('change', _service.initEndDate);
+		
+		$("#eventGubunC").bind('click', _service.initEventGubun);
+		$("#eventGubunG").bind('click', _service.initEventGubun);
+		
+		_service.getJsonZoneList() ;		
+		
+	//}catch(e){ 
+		//alert("로드 중 에러 발생 : " + e.description); 
+	//}
+});
+</script>
+<!-- E : bizLogic  -->
+
+
+<script type="text/javascript">
+// 팝업 공통 닫기
+$('.popup_dim').click(function(e){
+	$('.popup').fadeOut();
+	$(".popup_dim").fadeOut();
+	return false;
+});
+$('.btn_popclose').click(function(e){
+	$(this).parents('.popup').fadeOut();
+	$(".popup_dim").fadeOut();
+	return false;
+});
+
+// 공간설정 팝업 열기
+$('.btn_pop_zone').click(function(e){
+	$('.popup').fadeOut();
+	$('.popup_zone').fadeIn();
+	$(".popup_dim").fadeIn();
+	return false;
+});
+
+// 시간설정 팝업 열기
+$('.btn_pop_time').click(function(e){
+	$('.popup').fadeOut();
+	$('.popup_time').fadeIn();
+	$(".popup_dim").fadeIn();
+	return false;
+});
+
+//이벤트등록 팝업 열기
+/*
+$('#addEventButton').click(function(e){
+	$('.popup').fadeOut();
+	$('.popup_member_modify4').fadeIn();
+	$(".popup_dim").fadeIn();
+	return false;
+});
+*/
+
+</script>
+
+
+<!-- S : 폼 공통 -->
+<script type="text/javascript">
+//페이징
+function goPage(page){
+	var _el_form = document.getElementById("addForm")
+	_el_form.page.value = page;
+	_el_form.action = "eventList.do" ;
+	_el_form.submit();
+}
+
+// 취소
+function goCancel(){
+	var _el_form = document.getElementById("addForm") ;
+	_el_form.action = "eventList.do" ;
+	_el_form.submit();
+}
+
+//등록 처리
+function addEvent(){
+	var _el_form = document.getElementById("addForm");		
+	var _currentDate = "2018-09-12" ;
+	
+	//이벤트 이름 체크
+	if(!$.trim($("#eventName").val())){
+		alert("이벤트 이름을 입력해주세요.");
+		$("#eventName").focus();
+		return;
+	}
+	
+	// 이벤트 기간 체크
+	if(_currentDate>$("#startDate").val()){
+		alert("시작일이 오늘보다 이전입니다.");
+		return;
+	}
+	if(_currentDate>$("#endDate").val()){
+		alert("종료일이 오늘보다 이전입니다.");
+		return;
+	}
+	if($("#startDate").val()>$("#endDate").val()){
+		alert("종료일이 시작일 이전입니다.");
+		return;
+	}
+		
+	// 쿠폰선택 체크
+	if(!$("#couponId").val()){
+		alert("쿠폰을 선택해 주세요.");
+		return;
+	}
+	
+	// 공간설정 체크
+	if(!$("input[name=zoneId]").length){
+		alert("공간설정을 선택해주세요");
+		return;
+	}
+	
+	/*
+	if(confirm("이벤트를 등록 하시겠습니까?")) {
+		//alert( $("#startDate").val() + " " + $("#startDateHH").val() + ":" + $("#startDateMM").val() );
+		//alert( $("#endDate").val() + " " + $("#endDateHH").val() + ":" + $("#endDateMM").val() );
+		
+		$("#startDate").val( $("#startDate").val() + " " + $("#startDateHH").val() + ":" + $("#startDateMM").val() ) ;
+		$("#endDate").val( $("#endDate").val() + " " + $("#endDateHH").val() + ":" + $("#endDateMM").val() ) ;
+		
+		_el_form.submit();
+	}
+	*/
+	
+	$('.popup').fadeOut();
+	$('.popup_member_modify4').fadeIn();
+	$(".popup_dim").fadeIn();
+}
+
+function addEventConfirm(){
+	var _el_form = document.getElementById("addForm");		
+	
+	$("#startDate").val( $("#startDate").val() + " " + $("#startDateHH").val() + ":" + $("#startDateMM").val() ) ;
+	$("#endDate").val( $("#endDate").val() + " " + $("#endDateHH").val() + ":" + $("#endDateMM").val() ) ;
+	
+	_el_form.submit();
+}
+
+// 수정 폼 보기
+function goModifyEventForm(idx){
+	var _el_form = document.getElementById("modifyForm");
+	if(idx == "" || ! idx){
+		return ;
+	}	
+	_el_form.idx.value= idx;
+	_el_form.action = "modifyEventForm.do" ;
+	_el_form.modifyFrm.submit();
+}
+
+//수정 처리
+function modifyEvent(){
+	var _el_form = document.getElementById("modifyForm");		
+	if(confirm("이벤트 등록 정보를 수정하시겠습니까?"))	_el_form.submit();
+}
+
+// 삭제
+function removeEvent(){	
+	var _el_form = document.getElementById("modifyForm");
+	if(!confirm("이벤트를 삭제하시겠습니까?")) return;		
+	_el_form.action = 'removeEvent.do' ;
+	_el_form.submit();
+}
+
+
+// 시간설정 등록하기
+function regTimeSetting(_isFirst){	
+	// 1. weekCd : 요일제어
+	// 1. tempWeekCd : 임시 요일제어
+	if($("#tempWeekCd").val()){
+		$("#weekCd").val($("#tempWeekCd").val());
+	}
+	
+	// 2. stopStartTime : 비활성화 시작시간
+	// 2. tempStopStartTimeHH : 임시 비활성화 시작시간 (시간)
+	// 2. tempStopStartTimeMM :  임시 비활성화 시작시간 (분)
+	// 3. stopEndTime : 비활성화 종료시간
+	// 3. tempStopEndTimeHH : 임시 비활성화 종료시간 (시간)
+	// 3. tempStopEndTimeMM : 임시 비활성화 종료시간(분)
+	if($("#tempStopStartTimeHH").val() || $("#tempStopStartTimeMM").val() || $("#tempStopEndTimeHH").val() || $("#tempStopEndTimeMM").val() ){
+		if(!$("#tempStopStartTimeHH").val() || !$("#tempStopStartTimeMM").val() ){
+			alert("비활성화 시작시간을 확인해주세요.");
+			return;
+		}
+		if( !$("#tempStopEndTimeHH").val() || !$("#tempStopEndTimeMM").val() ){
+			alert("비활성화 종료시간을 확인해주세요.");
+			return;
+		}
+		// 2&3 비활성화 시간 값 저장
+		$("#stopStartTime").val( $("#tempStopStartTimeHH").val() + $("#tempStopStartTimeMM").val() );
+		$("#stopEndTime").val( $("#tempStopEndTimeHH").val() + $("#tempStopEndTimeMM").val()  );
+	}
+	
+	// 시간설정 없을 경우
+	if( !$("#tempStopStartTimeHH").val() && !$("#tempStopStartTimeMM").val() && !$("#tempStopEndTimeHH").val() && !$("#tempStopEndTimeMM").val() ){
+		// 2&3 비활성화 시간 값 저장
+		$("#stopStartTime").val( "" );
+		$("#stopEndTime").val( "" );
+	}
+	
+
+	
+	
+	// 4. repeatTime : 재수신 간격
+	// 4. tempRepeatTime : 재수신 간격
+	if($("#tempRepeatTime").val()){
+		$("#repeatTime").val($("#tempRepeatTime").val());
+	}
+	
+	// 등록된 설정값 보여주기
+	// 디폴드 : 매일 반복, 재수신 간격 3시간, 비활성화 시간 없음
+	// 요일제어 : WEEK_CD	요일	1	/ 0: 매일 / 1: 일요일 / 2: 월요일 / 3: 화요일 / 4: 수요일 / 5: 목요일 / 6: 금요일 / 7: 토요일 / 8: 평일(월화수목금) / 9: 주말(토일) / 	10: 일요일제외(월화수목금토)
+	// 재수신 간격 : 1~24시간
+	// 비활성화시간 : 시작~종료
+	var _tmp_textTimeSetting = "" ;		
+	
+	// 요일제어
+	switch($("#weekCd").val()){
+		case "0" :
+			_tmp_textTimeSetting = "매일 반복";
+	        break;
+		case "1" :
+			_tmp_textTimeSetting = "일요일";
+	        break;
+		case "2" :
+			_tmp_textTimeSetting = "월요일";
+	        break;
+		case "3" :
+			_tmp_textTimeSetting = "화요일";
+	        break;
+		case "4" :
+			_tmp_textTimeSetting = "수요일";
+	        break;
+		case "5" :
+			_tmp_textTimeSetting = "목요일";
+	        break;
+		case "6" :
+			_tmp_textTimeSetting = "금요일";
+	        break;
+		case "7" :
+			_tmp_textTimeSetting = "토요일";
+	        break;
+		case "8" :
+			_tmp_textTimeSetting = "평일(월화수목금)";
+	        break;
+		case "9" :
+			_tmp_textTimeSetting = "주말(토일)";
+	        break;
+		case "10" :
+			_tmp_textTimeSetting = "일요일제외(월화수목금토)";
+	        break;
+	    default:
+	    	_tmp_textTimeSetting = "매일 반복";
+	}
+	
+	/***
+	* 기획 제외
+	*
+	// 재수신 간격
+	_tmp_textTimeSetting += ",  재수신 간격 " + $("#repeatTime").val() + "시간" ;
+	*
+	***/
+	
+	
+	// 비활성화시간 설정
+	if( $("#stopStartTime").val() && $("#stopEndTime").val() ){
+		
+		if($("#stopStartTime").val()>$("#stopEndTime").val()){
+			alert("비활성화 시작시간을 비활성화 종료시간 이전으로 설정해주세요. ");
+			return;
+		}
+		
+		_tmp_textTimeSetting += ", 비활성화 시간 " ;
+		_tmp_textTimeSetting += $("#stopStartTime").val().substring(0,2) + ":" + $("#stopStartTime").val().substring(2,4);
+		_tmp_textTimeSetting += " ~ " ;
+		_tmp_textTimeSetting += $("#stopEndTime").val().substring(0,2) + ":" + $("#stopEndTime").val().substring(2,4);
+	}else{
+		_tmp_textTimeSetting += ", 비활성화 시간 없음 " ;
+	}
+	
+	$("#textTimeSetting").text(_tmp_textTimeSetting);
+	$('.popup').fadeOut();
+	$(".popup_dim").fadeOut();
+	
+	if(!_isFirst){
+		alert("시간 설정이 완료되었습니다.");
+	}
+}
+</script>
+<!-- E : 폼 공통 -->
+
+
+<!-- S: 공통 > 회사/브래드 셀렉트 -->
+<script type="text/javascript">
+$(document).ready(function(){
+	
+	/*  
+	* START
+	* 개요 : 사업 리스트 추가 및 회사 리스트 수정				
+	* 비고 : 회사 리스트 클릭시 사업 데이터에 맞게 조회 
+	* 등록자 : KANGJIYEON(2018-08-08)
+	*/
+	$('#enterpriseIdx').change(function(){
+		if($("#enterpriseIdx option:selected").val() == ""){
+			var selectElement = $("#companyIdx");
+			selectElement.empty();
+			selectElement.append($("<option></option>", {value: "", title: "", text: "참여사" }));
+			var selectElement = $("#brandIdx");
+			selectElement.empty();
+			selectElement.append($("<option></option>", {value: "", title: "", text: "가맹점" }));
+			var selectElement = $("#branchIdx");
+			selectElement.empty();
+			selectElement.append($("<option></option>", {value: "", title: "", text: "대리점" }));
+			
+			return;
+		}
+		
+		$("#enterpriseIdx option:selected").each(function(){
+			var EnterpriseValue = $("#enterpriseIdx option:selected").val();
+			settingCompanyList(EnterpriseValue);	
+			
+			
+		});				
+	});
+	
+	$('#companyIdx').change(function(){
+		if($("#companyIdx option:selected").val() == ""){
+			var selectElement = $("#brandIdx");
+			selectElement.empty();
+			selectElement.append($("<option></option>", {value: "", title: "", text: "가맹점" }));
+			var selectElement = $("#branchIdx");
+			selectElement.empty();
+			selectElement.append($("<option></option>", {value: "", title: "", text: "대리점" }));
+
+			return;
+		}
+		$("#companyIdx option:selected").each(function(){
+			var CompanyValue = $("#companyIdx option:selected").val();
+			settingBrandList(CompanyValue);
+			
+		});				
+	});
+					
+	$('#brandIdx').change(function(){
+		if($("#brandIdx option:selected").val() == ""){
+			var selectElement = $("#branchIdx");
+			selectElement.empty();
+			selectElement.append($("<option></option>", {value: "", title: "", text: "대리점" }));
+
+			return;
+		}
+		$("#brandIdx option:selected").each(function(){
+				
+			var BrandValue = $("#brandIdx option:selected").val();
+			settingBranchList(BrandValue);
+		});
+	});	
+	
+	// 회사 리스트 가져오기
+	settingEnterpriseList();
+	
+	var _tmp_searchEnterpriseCdIdx = null;
+	var _tmp_searchCompanyCdIdx = null;
+	var _tmp_searchBrandCdIdx = null;
+	var _tmp_searchBranchCdIdx = null;
+		
+	
+	
+	
+	
+	
+	if(_tmp_searchEnterpriseCdIdx) {		
+		$("#enterpriseIdx").val(_tmp_searchEnterpriseCdIdx);	// 1. 선택 값 유지
+		settingBrandList(_tmp_searchEnterpriseCdIdx);			// 2. 목록 가져오기
+	}
+	if(_tmp_searchCompanyCdIdx) {		
+		$("#companyIdx").val(_tmp_searchCompanyCdIdx);	// 1. 선택 값 유지
+		settingBrandList(_tmp_searchCompanyCdIdx);			// 2. 목록 가져오기
+	}	
+	if(_tmp_searchBrandCdIdx) {		
+		$("#brandIdx").val(_tmp_searchBrandCdIdx);				// 1. 선택 값 유지
+		settingBranchList(_tmp_searchBrandCdIdx);				// 2. 목록 가져오기
+	}	
+	if(_tmp_searchBranchCdIdx) {		
+		$("#branchIdx").val(_tmp_searchBranchCdIdx);			// 1. 선택 값 유지
+	}
+	
+	
+	
+	
+	
+});
+
+//S : KANGJIYEON(2018-08-08)
+function settingEnterpriseList(){
+	$.ajax({
+	type: "POST",
+	url: "/airbeacon/wbCommon/settingEnterpriseList",
+	dataType: "json",
+	async: false,
+	data: {						
+	},
+	success: function(data){
+		//console.log(data);
+		var selectElement = $("#enterpriseIdx");
+		var serviseNo = $("#serviseNo");
+		selectElement.empty();						
+		selectElement.append($("<option></option>", {value: "", title: "", text: "사업" }));	
+		
+		if( data !== null ){
+			var list = data.wbEnterpriseInfoList;
+			$.each(list, function(i){
+				selectElement.append($("<option></option>", { value: list[i].idx, title : list[i].comment, text: list[i].comment}));
+					
+			});
+			
+			
+		}
+	},
+	beforeSend: function(){
+	},
+	error: function(jqXHR, textStatus, errorThrown){
+		// alert(jqXHR.responseText); //에러 페이지 내용
+		alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+		throw errorThrown;
+	},
+	complete: function(){
+	}
+});
+}
+
+function settingCompanyList(EnterpriseValue){
+		$.ajax({
+		type: "POST",
+		url: "/airbeacon/wbCommon/settingCompanyList",
+		dataType: "json",
+		async: false,
+		data: {						
+			"highCodeIdx" : EnterpriseValue
+		},
+		success: function(data){
+			//console.log(data);
+			var selectElement = $("#companyIdx");	
+			selectElement.empty();						
+			selectElement.append($("<option></option>", {value: "", title: "", text: "참여사" }));	
+			
+			if( data !== null ){
+				var list = data.wbCompanyInfoList;
+				$.each(list, function(i){
+					selectElement.append($("<option></option>", { value: list[i].idx, title : list[i].comment, text: list[i].comment}));
+				});							
+			}
+		},
+		beforeSend: function(){
+		},
+		error: function(jqXHR, textStatus, errorThrown){
+			// alert(jqXHR.responseText); //에러 페이지 내용
+			alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+			throw errorThrown;
+		},
+		complete: function(){
+		}
+	});
+}
+
+// E : KANGJIYEON(2018-08-08)
+
+function settingBrandList(CompanyValue){
+	if(CompanyValue != "") {				
+		$.ajax({
+			type: "POST",
+			url: "/airbeacon/wbCommon/settingBrandList",
+			dataType: "json",
+			async: false,
+			data: {
+				"highCodeIdx" : CompanyValue
+			},
+			success: function(data){
+				//console.log(data);
+				var selectElement = $("#brandIdx");
+				var branchElement = $("#branchIdx");
+				selectElement.empty();
+				branchElement.empty();
+				selectElement.append($("<option></option>", {value: "", title: "", text: "가맹점" }));
+				branchElement.append($("<option></option>", {value: "", title: "", text: "대리점" }));
+				
+				if( data !== null ){
+					var list = data.wbBrandInfoList;
+					$.each(list, function(i){
+						selectElement.append($("<option></option>", { value: list[i].idx, title : list[i].comment, text: list[i].comment}));
+					});							
+				}
+			},
+			beforeSend: function(){
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				//alert(jqXHR.responseText); //에러 페이지 내용
+				alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+				throw errorThrown;
+			},
+			complete: function(){
+			}
+		});
+	}
+}
+
+function settingBranchList(BrandValue){
+	if(BrandValue != "") {	
+		$.ajax({
+			type: "POST",
+			url: "/airbeacon/wbCommon/settingBranchList",
+			dataType: "json",
+			async: false,
+			data: {
+				"highCodeIdx" : BrandValue
+			},
+			success: function(data){
+				//console.log(data);
+				var selectElement = $("#branchIdx");
+				selectElement.empty();
+				selectElement.append($("<option></option>", {value: "", title: "", text: "대리점" }));
+				
+				if( data !== null ){
+					var list = data.wbBranchInfoList;
+					$.each(list, function(i){
+						selectElement.append($("<option></option>", { value: list[i].idx, title : list[i].comment, text: list[i].comment}));
+					});							
+				}
+			},
+			beforeSend: function(){
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				//alert(jqXHR.responseText); //에러 페이지 내용
+				alert("오류가 발생하였습니다.\n관리자에게 문의 바랍니다.");
+				throw errorThrown;
+			},
+			complete: function(){
+			}
+		});
+	}
+}
+</script>
+ <!-- E : 공통 > 회사/브래드 셀렉트 -->
+
+
+
+<!-- S : jquery datepicker  -->
+<script>
+$(document).ready(function() {
+	
+	$(function() {
+		$( "#startDate" ).datepicker({
+			dateFormat: 'yy-mm-dd',
+		    prevText: '이전 달',
+		    nextText: '다음 달',
+		    monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+		    monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+		    dayNames: ['일','월','화','수','목','금','토'],
+		    dayNamesShort: ['일','월','화','수','목','금','토'],
+		    dayNamesMin: ['일','월','화','수','목','금','토'],
+		    showMonthAfterYear: true,
+		    changeMonth: true,
+		    changeYear: true,
+			showOn: "both",
+			buttonImage: "/airbeacon/commons/coordispace/images/btn_cal.png",
+			buttonImageOnly: true,
+		    yearSuffix: ''
+		    
+		});
+		$('#startDate').datepicker("option", "maxDate", $("#endDate").val());
+	    $('#startDate').datepicker("option", "onClose", function ( selectedDate ) {
+	        $("#endDate").datepicker( "option", "minDate", selectedDate );
+	    });
+
+	});
+	
+	$(function() {
+		$( "#endDate" ).datepicker({
+			dateFormat: 'yy-mm-dd',
+		    prevText: '이전 달',
+		    nextText: '다음 달',
+		    monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+		    monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+		    dayNames: ['일','월','화','수','목','금','토'],
+		    dayNamesShort: ['일','월','화','수','목','금','토'],
+		    dayNamesMin: ['일','월','화','수','목','금','토'],
+		    showMonthAfterYear: true,
+		    changeMonth: true,
+		    changeYear: true,
+			showOn: "both",
+			buttonImage: "/airbeacon/commons/coordispace/images/btn_cal.png",
+			buttonImageOnly: true,
+		    yearSuffix: ''
+		});
+		$('#endDate').datepicker("option", "minDate", $("#startDate").val());
+	    $('#endDate').datepicker("option", "onClose", function ( selectedDate ) {
+	        $("#startDate").datepicker( "option", "maxDate", selectedDate );
+	    });
+	});
+	
+});
+</script>
+<!-- E : jquery datepicker  -->
+
+<!-- S : ETC  -->
+<script>
+function chkword(obj, maxByte) {
+	 
+    var strValue = obj.value;
+    var strLen = strValue.length;
+    var totalByte = 0;
+    var len = 0;
+    var oneChar = "";
+    var str2 = "";
+
+    for (var i = 0; i < strLen; i++) {
+        oneChar = strValue.charAt(i);
+        if (escape(oneChar).length > 4) {
+            totalByte += 2;
+        } else {
+            totalByte++;
+        }
+
+        // 입력한 문자 길이보다 넘치면 잘라내기 위해 저장
+        if (totalByte <= maxByte) {
+            len = i + 1;
+        }
+    }
+
+    // 넘어가는 글자는 자른다.
+    if (totalByte > maxByte) {
+    	alert(maxByte + "bytes(영문" + maxByte + "자/한글" + maxByte/2 + "자)를 초과 입력 할 수 없습니다.");
+        str2 = strValue.substr(0, len);
+        obj.value = str2;
+        chkword(obj, maxByte);
+    }
+}
+</script>
+<!-- E : ETC  -->
+
+</body>
+</html>	

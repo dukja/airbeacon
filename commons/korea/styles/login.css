@@ -1,0 +1,47 @@
+@charset "UTF-8";
+
+body {background-color:#F4F4F4;height:100%;}
+h1 {border-bottom:3px solid #2d2e33;}
+h2 {width:500px!important;height:200px;display:block;font-size:13.5pt;color:#959699;text-align:center;line-height:18em;background:url(../images/poins_vb.png) center top no-repeat;background-size: 460px 100px;margin:120px auto 20px;border:0;}
+h3 {width:700px!important;height:200px;display:block;font-size:13.5pt;color:#959699;text-align:center;line-height:3em;margin:100px auto 20px;border:0;}
+hr {width:480px;margin:20px auto;height:0;border:0;border-top:1px solid #151619;border-bottom:1px solid #2b2f39;background:none;}
+
+#header {background:#FFFFFF;}
+#wrap {width:100%;height:100%;}
+
+form.login_area {width:300px;margin:0 auto;}
+form.login_area fieldset {position:relative;}
+form.login_area input {width:313px;height:40px;background-color:#F4F4F4;border:1px solid #111214;margin-bottom:10px;padding-left:5px;color:#45474d;font-size:10.5pt;}
+form.login_area button {width:320px;height:40px;background-color:#e97e12;border:0;color:#fff;font-size:13.5pt;margin-top:10px;}
+
+.ID {position:absolute;top:0;left:0;}
+.PW {position:absolute;top:55px;left:0;}
+.join_find {margin:0 auto;width:410px;text-align:center;color:#fff;font-size:9.75pt;}
+.find {color:#7b7b7b;margin-right:10px;}
+.join {color:#fff;margin-left:10px;}
+.logo {width:210px; height:auto}
+
+.error_box_v2 {
+/*     position: absolute; */
+    top: 32px;
+    left: -15px;
+    z-index: 16;
+    width: 300px;
+    height: 20px;
+/*     background: #595959; */
+    font-size: 12px;
+    font-weight: bold;
+    color: #959699;
+}
+
+.error_box_v2 strong {
+    font-family: Arial,Helvetica,sans-serif;
+    color: #FF6A00;
+}
+
+.guest_area{
+	display: table;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 22px;
+}

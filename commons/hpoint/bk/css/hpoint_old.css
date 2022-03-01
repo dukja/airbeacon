@@ -1,0 +1,32 @@
+body .login {
+  background-image: url("/airbeacon/commons/hpoint/images/bg-login.png");
+  background-position: bottom; }
+
+.logo_dev .brand {
+  background: url("/airbeacon/commons/hpoint/images/logo.png") !important;
+  width: 140px !important;
+  height: 40px !important; }
+
+.login_logo .logo {
+  background-image: url("/airbeacon/commons/hpoint/images/logo_black.png") !important;
+  width: 194px;
+  height: 40px !important;
+  background-repeat: no-repeat; }
+
+.btn_brand {
+  background: #34b299 !important;
+  border-color: #34b299 !important; }
+  .btn_brand:hover {
+    background-color: #258772 !important;
+    border-color: #258772 !important; }
+  .btn_brand:not(:disabled):not(.disabled):active {
+    color: #fff !important;
+    background-color: #258772 !important;
+    border-color: #258772 !important; }
+
+.breadcrumb .active {
+  color: #34b299 !important; }
+
+.snb_util ul .on a {
+  background: #34b299 !important;
+  color: #fff; }
